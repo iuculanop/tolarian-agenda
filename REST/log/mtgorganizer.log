@@ -1,0 +1,486 @@
+DEBUG: 2018/04/16 15:46:55 mtgOrganizer.go:98: Begin authentication
+ERROR: 2018/04/16 15:46:55 mtgOrganizer.go:101: Failed to convert JSON data to struct
+ERROR: 2018/04/16 15:46:55 mtgOrganizer.go:102: invalid character '-' in numeric literal
+DEBUG: 2018/04/16 15:46:55 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:46:55 mtgOrganizer.go:106: { }
+DEBUG: 2018/04/16 15:48:54 mtgOrganizer.go:98: Begin authentication
+ERROR: 2018/04/16 15:48:54 mtgOrganizer.go:101: Failed to convert JSON data to struct
+ERROR: 2018/04/16 15:48:54 mtgOrganizer.go:102: invalid character '"' after object key:value pair
+DEBUG: 2018/04/16 15:48:54 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:48:54 mtgOrganizer.go:106: { }
+DEBUG: 2018/04/16 15:49:21 mtgOrganizer.go:98: Begin authentication
+ERROR: 2018/04/16 15:49:21 mtgOrganizer.go:101: Failed to convert JSON data to struct
+ERROR: 2018/04/16 15:49:21 mtgOrganizer.go:102: invalid character 'p' looking for beginning of value
+DEBUG: 2018/04/16 15:49:21 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:49:21 mtgOrganizer.go:106: { }
+DEBUG: 2018/04/16 15:49:49 mtgOrganizer.go:98: Begin authentication
+ERROR: 2018/04/16 15:49:49 mtgOrganizer.go:101: Failed to convert JSON data to struct
+ERROR: 2018/04/16 15:49:49 mtgOrganizer.go:102: invalid character 'u' looking for beginning of object key string
+DEBUG: 2018/04/16 15:49:49 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:49:49 mtgOrganizer.go:106: { }
+DEBUG: 2018/04/16 15:50:12 mtgOrganizer.go:98: Begin authentication
+ERROR: 2018/04/16 15:50:12 mtgOrganizer.go:101: Failed to convert JSON data to struct
+ERROR: 2018/04/16 15:50:12 mtgOrganizer.go:102: invalid character '"' after object key:value pair
+DEBUG: 2018/04/16 15:50:12 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:50:12 mtgOrganizer.go:106: { }
+DEBUG: 2018/04/16 15:50:58 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 15:50:58 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:50:58 mtgOrganizer.go:106: { }
+DEBUG: 2018/04/16 15:51:55 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 15:51:55 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:51:55 mtgOrganizer.go:106: 
+DEBUG: 2018/04/16 15:54:45 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 15:54:45 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:54:45 mtgOrganizer.go:106: {username: password:}
+DEBUG: 2018/04/16 15:59:27 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 15:59:27 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 15:59:27 mtgOrganizer.go:106: {username: password:}
+DEBUG: 2018/04/16 16:00:19 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:00:19 mtgOrganizer.go:105: User is trying to authenticate
+DEBUG: 2018/04/16 16:00:19 mtgOrganizer.go:106: {username: password:}
+DEBUG: 2018/04/16 16:01:26 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:01:26 mtgOrganizer.go:105: User with name  is trying to authenticate
+DEBUG: 2018/04/16 16:01:26 mtgOrganizer.go:106: {username: password:}
+DEBUG: 2018/04/16 16:03:32 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:03:32 mtgOrganizer.go:106: User with name  is trying to authenticate
+DEBUG: 2018/04/16 16:03:32 mtgOrganizer.go:107: {username: password:}
+DEBUG: 2018/04/16 16:04:00 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:04:00 mtgOrganizer.go:106: User with name  is trying to authenticate
+DEBUG: 2018/04/16 16:04:00 mtgOrganizer.go:107: {username: password:}
+DEBUG: 2018/04/16 16:04:39 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:04:39 mtgOrganizer.go:106: User with name  is trying to authenticate
+DEBUG: 2018/04/16 16:04:39 mtgOrganizer.go:107: {username: password:}
+DEBUG: 2018/04/16 16:08:45 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:08:45 mtgOrganizer.go:106: User with name  is trying to authenticate
+DEBUG: 2018/04/16 16:08:45 mtgOrganizer.go:107: {username: password:}
+DEBUG: 2018/04/16 16:17:35 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:17:35 mtgOrganizer.go:106: User with name  is trying to authenticate
+DEBUG: 2018/04/16 16:17:35 mtgOrganizer.go:107: {username: password:}
+DEBUG: 2018/04/16 16:22:21 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:22:21 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 16:22:21 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 16:22:34 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:22:34 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 16:22:34 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 16:50:05 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:50:05 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 16:50:05 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 16:50:51 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:50:51 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 16:50:51 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 16:59:26 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 16:59:26 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 16:59:26 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 16:59:26 mtgOrganizer.go:110: Authentication is false
+DEBUG: 2018/04/16 17:00:23 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 17:00:23 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 17:00:23 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 17:00:23 mtgOrganizer.go:110: Authentication is true
+DEBUG: 2018/04/16 17:03:54 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 17:03:54 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 17:03:54 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/16 17:03:54 mtgOrganizer.go:110: User Paolo Authentication is true
+DEBUG: 2018/04/16 17:33:29 mtgOrganizer.go:98: Begin authentication
+DEBUG: 2018/04/16 17:33:29 mtgOrganizer.go:105: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/16 17:33:29 mtgOrganizer.go:106: {Username:p.iuculano Password:el.mariachi821}
+DEBUG: 2018/04/16 17:33:29 mtgOrganizer.go:110: User Paolo Authentication is false
+DEBUG: 2018/04/17 09:44:53 mtgOrganizer.go:116: Begin authentication
+DEBUG: 2018/04/17 09:44:53 mtgOrganizer.go:123: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 09:44:53 mtgOrganizer.go:124: {Username:p.iuculano Password:el.mariachi821}
+DEBUG: 2018/04/17 09:44:53 mtgOrganizer.go:128: User Paolo Authentication is false
+DEBUG: 2018/04/17 09:45:14 mtgOrganizer.go:116: Begin authentication
+DEBUG: 2018/04/17 09:45:14 mtgOrganizer.go:123: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 09:45:14 mtgOrganizer.go:124: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 09:45:14 mtgOrganizer.go:128: User Paolo Authentication is true
+DEBUG: 2018/04/17 09:46:58 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 09:46:58 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 09:46:58 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 09:46:58 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 09:51:13 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 09:51:13 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 09:51:13 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 09:51:13 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 10:00:01 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 10:00:01 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 10:00:01 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 10:00:01 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 10:01:31 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 10:01:31 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 10:01:31 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 10:01:31 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 10:19:30 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 10:19:30 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 10:19:30 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 10:19:30 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 10:21:18 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 10:21:18 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 10:21:18 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 10:21:18 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 10:27:40 mtgOrganizer.go:119: Begin authentication
+DEBUG: 2018/04/17 10:27:40 mtgOrganizer.go:126: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 10:27:40 mtgOrganizer.go:127: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 10:27:40 mtgOrganizer.go:131: User Paolo Authentication is true
+DEBUG: 2018/04/17 10:31:34 mtgOrganizer.go:120: Begin authentication
+DEBUG: 2018/04/17 10:31:34 mtgOrganizer.go:127: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 10:31:34 mtgOrganizer.go:128: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 10:31:34 mtgOrganizer.go:132: User Paolo Authentication is true
+DEBUG: 2018/04/17 11:38:30 mtgOrganizer.go:120: Begin authentication
+DEBUG: 2018/04/17 11:38:30 mtgOrganizer.go:127: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 11:38:30 mtgOrganizer.go:128: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 11:38:30 mtgOrganizer.go:132: User Paolo Authentication is true
+DEBUG: 2018/04/17 11:39:56 mtgOrganizer.go:120: Begin authentication
+DEBUG: 2018/04/17 11:39:56 mtgOrganizer.go:127: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 11:39:56 mtgOrganizer.go:128: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 11:39:56 mtgOrganizer.go:132: User Paolo Authentication is true
+DEBUG: 2018/04/17 11:48:01 mtgOrganizer.go:120: Begin authentication
+DEBUG: 2018/04/17 11:48:01 mtgOrganizer.go:127: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 11:48:01 mtgOrganizer.go:128: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 11:48:01 mtgOrganizer.go:132: User Paolo Authentication is true
+DEBUG: 2018/04/17 12:00:55 mtgOrganizer.go:120: Begin authentication
+DEBUG: 2018/04/17 12:00:55 mtgOrganizer.go:127: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 12:00:55 mtgOrganizer.go:128: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 12:00:55 mtgOrganizer.go:132: User Paolo Authentication is true
+DEBUG: 2018/04/17 12:01:13 mtgOrganizer.go:120: Begin authentication
+DEBUG: 2018/04/17 12:01:13 mtgOrganizer.go:127: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 12:01:13 mtgOrganizer.go:128: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 12:01:13 mtgOrganizer.go:132: User Paolo Authentication is true
+DEBUG: 2018/04/17 12:15:55 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 12:15:55 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 12:15:55 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 12:15:55 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 13:35:38 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 13:35:38 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 13:35:38 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 13:35:38 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 13:35:51 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 13:35:51 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 13:35:51 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi821}
+DEBUG: 2018/04/17 13:35:51 mtgOrganizer.go:138: User Paolo Authentication is false
+DEBUG: 2018/04/17 13:48:33 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 13:48:33 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 13:48:33 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 13:48:33 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 13:56:41 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 13:56:41 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 13:56:41 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 13:56:41 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 13:59:50 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 13:59:50 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 13:59:50 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 13:59:50 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 14:03:36 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:03:36 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:03:36 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 14:03:36 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 14:05:15 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:05:15 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:05:15 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 14:05:15 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 14:06:32 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:06:32 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:06:32 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi}
+DEBUG: 2018/04/17 14:06:32 mtgOrganizer.go:138: User Paolo Authentication is false
+DEBUG: 2018/04/17 14:07:02 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:07:02 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:07:02 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 14:07:02 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 14:21:56 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:21:56 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:21:56 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 14:21:56 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 14:42:31 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:42:31 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:42:31 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 14:42:31 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 14:57:22 mtgOrganizer.go:126: Begin authentication
+DEBUG: 2018/04/17 14:57:22 mtgOrganizer.go:133: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 14:57:22 mtgOrganizer.go:134: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 14:57:22 mtgOrganizer.go:138: User Paolo Authentication is true
+DEBUG: 2018/04/17 15:32:42 mtgOrganizer.go:128: Begin authentication
+DEBUG: 2018/04/17 15:32:42 mtgOrganizer.go:135: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 15:32:42 mtgOrganizer.go:136: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 15:32:42 mtgOrganizer.go:140: User Paolo Authentication is true
+DEBUG: 2018/04/17 15:54:16 mtgOrganizer.go:146: Begin authentication
+DEBUG: 2018/04/17 15:54:16 mtgOrganizer.go:153: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 15:54:16 mtgOrganizer.go:154: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 15:54:16 mtgOrganizer.go:158: User Paolo Authentication is true
+DEBUG: 2018/04/17 17:08:00 mtgOrganizer.go:150: Begin authentication
+DEBUG: 2018/04/17 17:08:00 mtgOrganizer.go:157: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/17 17:08:00 mtgOrganizer.go:158: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/17 17:08:00 mtgOrganizer.go:162: User Paolo Authentication is true
+DEBUG: 2018/04/18 10:56:05 mtgOrganizer.go:167: Begin authentication
+DEBUG: 2018/04/18 10:56:05 mtgOrganizer.go:174: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/18 10:56:05 mtgOrganizer.go:175: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/18 10:56:05 mtgOrganizer.go:179: User Paolo Authentication is true
+DEBUG: 2018/04/18 11:17:09 mtgOrganizer.go:174: Begin authentication
+DEBUG: 2018/04/18 11:17:09 mtgOrganizer.go:181: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/18 11:17:09 mtgOrganizer.go:182: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/18 11:17:09 mtgOrganizer.go:186: User Paolo Authentication is true
+DEBUG: 2018/04/18 11:20:17 mtgOrganizer.go:174: Begin authentication
+DEBUG: 2018/04/18 11:20:17 mtgOrganizer.go:181: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/18 11:20:17 mtgOrganizer.go:182: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/18 11:20:17 mtgOrganizer.go:186: User Paolo Authentication is true
+DEBUG: 2018/04/18 11:20:50 mtgOrganizer.go:174: Begin authentication
+DEBUG: 2018/04/18 11:20:50 mtgOrganizer.go:181: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/18 11:20:50 mtgOrganizer.go:182: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/18 11:20:50 mtgOrganizer.go:186: User Paolo Authentication is true
+DEBUG: 2018/04/18 11:23:54 mtgOrganizer.go:174: Begin authentication
+DEBUG: 2018/04/18 11:23:54 mtgOrganizer.go:181: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/18 11:23:54 mtgOrganizer.go:182: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/18 11:23:54 mtgOrganizer.go:186: User Paolo Authentication is true
+DEBUG: 2018/04/19 14:09:33 mtgOrganizer.go:174: Begin authentication
+DEBUG: 2018/04/19 14:09:33 mtgOrganizer.go:181: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/19 14:09:33 mtgOrganizer.go:182: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/19 14:09:33 mtgOrganizer.go:186: User Paolo Authentication is true
+DEBUG: 2018/04/19 16:34:39 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/19 16:34:39 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/19 16:34:39 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/19 16:34:39 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/20 10:02:44 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/20 10:02:44 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/20 10:02:44 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/20 10:02:44 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/20 14:27:07 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/20 14:27:07 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/20 14:27:07 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/20 14:27:07 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/23 10:01:40 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/23 10:01:40 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/23 10:01:40 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/23 10:01:40 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/23 10:01:40 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/23 10:01:40 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/23 10:02:16 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/23 10:02:16 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/23 10:02:16 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/23 10:02:16 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/23 10:02:16 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/23 10:02:16 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/23 10:03:00 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/23 10:03:00 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/23 10:03:00 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/23 10:03:00 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/24 11:31:05 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/24 11:31:05 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/24 11:31:05 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/24 11:31:05 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/24 15:32:41 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/24 15:32:41 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/24 15:32:41 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/24 15:32:41 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/27 11:11:36 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/27 11:11:36 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/27 11:11:36 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/27 11:11:36 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/04/27 13:49:03 mtgOrganizer.go:200: Begin authentication
+DEBUG: 2018/04/27 13:49:03 mtgOrganizer.go:207: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/04/27 13:49:03 mtgOrganizer.go:208: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/04/27 13:49:03 mtgOrganizer.go:212: User Paolo Authentication is true
+DEBUG: 2018/05/21 10:39:22 mtgOrganizer.go:201: Begin authentication
+DEBUG: 2018/05/21 10:39:22 mtgOrganizer.go:208: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/05/21 10:39:22 mtgOrganizer.go:209: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/05/21 10:39:22 mtgOrganizer.go:213: User Paolo Authentication is true
+DEBUG: 2018/05/21 12:42:51 mtgOrganizer.go:201: Begin authentication
+DEBUG: 2018/05/21 12:42:51 mtgOrganizer.go:208: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/05/21 12:42:51 mtgOrganizer.go:209: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/05/21 12:42:51 mtgOrganizer.go:213: User Paolo Authentication is true
+DEBUG: 2018/05/21 16:43:41 mtgOrganizer.go:201: Begin authentication
+DEBUG: 2018/05/21 16:43:41 mtgOrganizer.go:208: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/05/21 16:43:41 mtgOrganizer.go:209: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/05/21 16:43:41 mtgOrganizer.go:213: User Paolo Authentication is true
+DEBUG: 2018/07/05 14:04:50 mtgOrganizer.go:201: Begin authentication
+DEBUG: 2018/07/05 14:04:50 mtgOrganizer.go:208: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/05 14:04:50 mtgOrganizer.go:209: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/05 14:04:50 mtgOrganizer.go:213: User Paolo Authentication is true
+DEBUG: 2018/07/05 14:42:07 mtgOrganizer.go:270: Adding card {96962 1 false 0} to collection of user p.iuculano
+DEBUG: 2018/07/05 14:55:34 mtgOrganizer.go:270: Adding card {96962 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 14:26:57 mtgOrganizer.go:202: Begin authentication
+DEBUG: 2018/07/06 14:26:57 mtgOrganizer.go:209: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/06 14:26:57 mtgOrganizer.go:210: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/06 14:26:57 mtgOrganizer.go:214: User Paolo Authentication is true
+DEBUG: 2018/07/06 14:28:28 mtgOrganizer.go:202: Begin authentication
+DEBUG: 2018/07/06 14:28:28 mtgOrganizer.go:209: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/06 14:28:28 mtgOrganizer.go:210: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/06 14:28:28 mtgOrganizer.go:214: User Paolo Authentication is true
+DEBUG: 2018/07/06 14:32:56 mtgOrganizer.go:202: Begin authentication
+DEBUG: 2018/07/06 14:32:56 mtgOrganizer.go:209: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/06 14:32:56 mtgOrganizer.go:210: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/06 14:32:56 mtgOrganizer.go:214: User Paolo Authentication is true
+DEBUG: 2018/07/06 15:00:05 mtgOrganizer.go:270: Adding card {0 0 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:04:03 mtgOrganizer.go:270: Adding card {0 0 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:07:20 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:07:25 mtgOrganizer.go:270: Adding card {96951 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:27:17 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:27:17 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:27:17 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:37:31 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:37:31 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:37:31 mtgOrganizer.go:270: Adding card {96951 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:47:29 mtgOrganizer.go:270: Adding card {96951 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:47:29 mtgOrganizer.go:270: Adding card {96951 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:47:29 mtgOrganizer.go:270: Adding card {96951 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:48:19 mtgOrganizer.go:270: Adding card {96951 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 15:48:22 mtgOrganizer.go:270: Adding card {96929 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/07/06 16:43:24 mtgOrganizer.go:202: Begin authentication
+DEBUG: 2018/07/06 16:43:24 mtgOrganizer.go:209: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/06 16:43:24 mtgOrganizer.go:210: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/06 16:43:24 mtgOrganizer.go:214: User Paolo Authentication is true
+DEBUG: 2018/07/09 12:44:30 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/07/09 12:44:30 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/09 12:44:30 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/09 12:44:30 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/07/09 12:47:10 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/07/09 12:47:10 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/09 12:47:10 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/09 12:47:10 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/07/09 15:57:05 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/07/09 15:57:05 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/09 15:57:05 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/09 15:57:05 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/07/09 16:02:55 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/07/09 16:02:55 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/07/09 16:02:55 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/07/09 16:02:55 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/17 10:18:37 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/17 10:18:37 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/17 10:18:37 mtgOrganizer.go:237: {Username:p.iuculano Password:elmariachi82}
+DEBUG: 2018/12/17 10:18:37 mtgOrganizer.go:241: User Paolo Authentication is false
+DEBUG: 2018/12/17 10:19:55 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/17 10:19:55 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/17 10:19:55 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/17 10:19:55 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/17 10:20:36 mtgOrganizer.go:297: Adding card {452751 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:39 mtgOrganizer.go:297: Adding card {452751 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:39 mtgOrganizer.go:297: Adding card {452751 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:41 mtgOrganizer.go:297: Adding card {452751 4 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:43 mtgOrganizer.go:297: Adding card {452752 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:46 mtgOrganizer.go:297: Adding card {452753 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:47 mtgOrganizer.go:297: Adding card {452753 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:20:48 mtgOrganizer.go:297: Adding card {452753 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:21:58 mtgOrganizer.go:297: Adding card {452754 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:22:02 mtgOrganizer.go:297: Adding card {452754 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:22:08 mtgOrganizer.go:297: Adding card {452755 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:22:08 mtgOrganizer.go:297: Adding card {452755 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:22:09 mtgOrganizer.go:297: Adding card {452755 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:22:12 mtgOrganizer.go:297: Adding card {452756 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:22:42 mtgOrganizer.go:297: Adding card {452757 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:57:25 mtgOrganizer.go:297: Adding card {452759 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:57:27 mtgOrganizer.go:297: Adding card {452760 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:57:30 mtgOrganizer.go:297: Adding card {452761 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:57:45 mtgOrganizer.go:297: Adding card {452764 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:57:47 mtgOrganizer.go:297: Adding card {452763 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:03 mtgOrganizer.go:297: Adding card {452765 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:05 mtgOrganizer.go:297: Adding card {452765 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:06 mtgOrganizer.go:297: Adding card {452765 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:10 mtgOrganizer.go:297: Adding card {452766 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:11 mtgOrganizer.go:297: Adding card {452766 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:13 mtgOrganizer.go:297: Adding card {452767 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:14 mtgOrganizer.go:297: Adding card {452767 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:15 mtgOrganizer.go:297: Adding card {452767 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:21 mtgOrganizer.go:297: Adding card {452768 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:22 mtgOrganizer.go:297: Adding card {452768 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:23 mtgOrganizer.go:297: Adding card {452768 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:33 mtgOrganizer.go:297: Adding card {452778 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:34 mtgOrganizer.go:297: Adding card {452778 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:35 mtgOrganizer.go:297: Adding card {452778 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:35 mtgOrganizer.go:297: Adding card {452778 4 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:37 mtgOrganizer.go:297: Adding card {452779 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:38 mtgOrganizer.go:297: Adding card {452779 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:40 mtgOrganizer.go:297: Adding card {452779 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:41 mtgOrganizer.go:297: Adding card {452780 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:42 mtgOrganizer.go:297: Adding card {452780 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:44 mtgOrganizer.go:297: Adding card {452775 1 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:45 mtgOrganizer.go:297: Adding card {452775 2 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:45 mtgOrganizer.go:297: Adding card {452775 3 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 10:58:46 mtgOrganizer.go:297: Adding card {452775 4 false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:15:04 mtgOrganizer.go:297: Adding card {452769 1  false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:17:26 mtgOrganizer.go:297: Adding card {452770 1  false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:18:44 mtgOrganizer.go:297: Adding card {452771 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:24 mtgOrganizer.go:297: Adding card {452771 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:28 mtgOrganizer.go:297: Adding card {452771 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:34 mtgOrganizer.go:297: Adding card {452772 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:35 mtgOrganizer.go:297: Adding card {452772 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:39 mtgOrganizer.go:297: Adding card {452772 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:41 mtgOrganizer.go:297: Adding card {452773 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:42 mtgOrganizer.go:297: Adding card {452773 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:42 mtgOrganizer.go:297: Adding card {452773 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:44 mtgOrganizer.go:297: Adding card {452773 4 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:51 mtgOrganizer.go:297: Adding card {452777 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:52 mtgOrganizer.go:297: Adding card {452777 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:19:53 mtgOrganizer.go:297: Adding card {452777 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:11 mtgOrganizer.go:297: Adding card {452781 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:12 mtgOrganizer.go:297: Adding card {452781 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:13 mtgOrganizer.go:297: Adding card {452781 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:14 mtgOrganizer.go:297: Adding card {452781 4 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:16 mtgOrganizer.go:297: Adding card {452782 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:17 mtgOrganizer.go:297: Adding card {452782 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:17 mtgOrganizer.go:297: Adding card {452782 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:45 mtgOrganizer.go:297: Adding card {452794 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:20:46 mtgOrganizer.go:297: Adding card {452794 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 11:21:58 mtgOrganizer.go:297: Adding card {453008 1 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/17 13:18:54 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/17 13:18:54 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/17 13:18:54 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/17 13:18:54 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/17 15:21:19 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/17 15:21:19 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/17 15:21:19 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/17 15:21:19 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/18 10:24:52 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/18 10:24:52 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/18 10:24:52 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/18 10:24:52 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/18 13:23:20 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/18 13:23:20 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/18 13:23:20 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/18 13:23:20 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/18 15:37:08 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/18 15:37:08 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/18 15:37:08 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/18 15:37:08 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/19 14:59:08 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/19 14:59:08 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/19 14:59:08 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/19 14:59:08 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/19 17:28:18 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/19 17:28:18 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/19 17:28:18 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/19 17:28:18 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/20 09:39:45 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/20 09:39:45 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/20 09:39:45 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/20 09:39:45 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/20 09:40:31 mtgOrganizer.go:297: Adding card {136142 1 FUT false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 10:14:13 mtgOrganizer.go:297: Adding card {439602 1 UST false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 10:14:14 mtgOrganizer.go:297: Adding card {439602 2 UST false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 10:14:14 mtgOrganizer.go:297: Adding card {439602 3 UST false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 10:14:15 mtgOrganizer.go:297: Adding card {439602 4 UST false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 10:14:16 mtgOrganizer.go:297: Adding card {439602 5 UST false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 13:22:07 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/20 13:22:07 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/20 13:22:07 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi}
+DEBUG: 2018/12/20 13:22:07 mtgOrganizer.go:241: User Paolo Authentication is false
+DEBUG: 2018/12/20 13:22:42 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/20 13:22:42 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/20 13:22:42 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/20 13:22:42 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/20 13:31:20 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/20 13:31:20 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/20 13:31:20 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/20 13:31:20 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/20 13:39:54 mtgOrganizer.go:338: Removing card {452751 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 13:45:50 mtgOrganizer.go:338: Removing card {452753 2 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 13:45:54 mtgOrganizer.go:297: Adding card {452753 3 GRN false 0} to collection of user %!s(int=1)
+DEBUG: 2018/12/20 16:26:36 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/20 16:26:36 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/20 16:26:36 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/20 16:26:36 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/21 08:24:43 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/21 08:24:43 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/21 08:24:43 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/21 08:24:43 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/21 09:45:45 mtgOrganizer.go:229: Begin authentication
+DEBUG: 2018/12/21 09:45:45 mtgOrganizer.go:236: User with name p.iuculano is trying to authenticate
+DEBUG: 2018/12/21 09:45:45 mtgOrganizer.go:237: {Username:p.iuculano Password:el.mariachi82}
+DEBUG: 2018/12/21 09:45:45 mtgOrganizer.go:241: User Paolo Authentication is true
+DEBUG: 2018/12/21 09:50:10 mtgOrganizer.go:297: Adding card {87952 1 RAV false 0} to collection of user %!s(int=1)

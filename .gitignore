@@ -1,0 +1,8 @@
+#ignore those files
+*~
+#ignore those dirs
+REST/bin/
+REST/pkg/
+REST/src/github.com/
+WEBAPP/node_modules/
+WEBAPP/dist/
