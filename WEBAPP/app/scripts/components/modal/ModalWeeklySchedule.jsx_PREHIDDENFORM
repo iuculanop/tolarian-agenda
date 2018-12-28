@@ -1,0 +1,549 @@
+import React, { PropTypes } from 'react';
+import Modal from 'react-modal';
+import { SideNav } from 'react-sidenav';
+import DatePicker from 'react-datepicker';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import FormaDidSelect from 'components/form/FormaDidSelect.jsx';
+import 'react-datepicker/dist/react-datepicker.css';
+
+import _ from 'lodash';
+import moment from 'moment';
+import { generateDateFromUser } from 'util/DateGenerator.jsx';
+import { aoIndexOf, aoObjectOf } from 'util/WebserviceRequests.jsx';
+import { durationValidator } from 'util/Validators.jsx';
+
+const customStyles = {
+  content: {
+    position: 'absolute',
+    top: '150px',
+    left: '70px',
+    right: '40px',
+    bottom: 'auto',
+    overflow: 'auto',
+    WebkitOverflowScrolling: 'touch',
+    outline: 'none',
+    padding: '20px',
+  },
+  overlay: {
+    zIndex: '1050',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+};
+
+const rightStyle = {
+  color: '#333333 !important',
+};
+
+const createFormaDidEditor = (onUpdate, props) =>
+  (<FormaDidSelect onUpdate={onUpdate} {...props} />);
+
+function hourStartValidator(value) {
+  const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+  const isValid = /^([0-1]?[0-9]|2[0-4]):([0-5][0-9])(:[0-5][0-9])?$/.test(value);
+  if (!isValid) {
+    response.isValid = false;
+    response.notification.type = 'error';
+    response.notification.msg = 'il formato deve essere hh:mm.(es. 09:00)';
+    response.notification.title = 'Valore non ammissibile';
+  }
+  return response;
+}
+
+function roomValidator(value) {
+  const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+  if (!value) {
+    response.isValid = false;
+    response.notification.type = 'error';
+    response.notification.msg = 'Si prega di inserire l\'aula';
+    response.notification.title = 'Campo obbligatorio';
+  }
+  return response;
+}
+function occurrencesCounter(weeklyOccurrences) {
+  const counter = weeklyOccurrences.monday.length +
+                  weeklyOccurrences.tuesday.length +
+                  weeklyOccurrences.wednesday.length +
+                  weeklyOccurrences.thursday.length +
+                  weeklyOccurrences.friday.length +
+                  weeklyOccurrences.saturday.length;
+  return counter;
+}
+
+function occurrencesChecker(dayOccurrences) {
+  for (let i = 0; i < dayOccurrences.length; i++) {
+    if (dayOccurrences[i].rowId === 0) {
+      return false;
+    }
+    if (dayOccurrences[i].hourStart === '') {
+      return false;
+    }
+    if (dayOccurrences[i].duration === '') {
+      return false;
+    }
+    if (dayOccurrences[i].room === '') {
+      return false;
+    }
+    if (dayOccurrences[i].place === '') {
+      return false;
+    }
+    if (dayOccurrences[i].idFormaDid === '') {
+      return false;
+    }
+  }
+  return true;
+}
+
+/* eslint-disable */
+function saveButtonValidator(weeklyOccurrences, startDate, endDate) {
+  for (const dayOccurrence in weeklyOccurrences) {
+    console.log('dati di dayOccurrence:', dayOccurrence);
+    if (!occurrencesChecker(weeklyOccurrences[dayOccurrence])) {
+      return false;
+    }
+  }
+  if (occurrencesCounter(weeklyOccurrences) === 0) {
+    return false;
+  }
+  console.log('startDate:', startDate);
+  console.log('endDate:', endDate);
+  if (startDate === 'undefined' || endDate == null) {
+    return false;
+  }
+  return true;
+}
+
+/* eslint-enable */
+function SaveButton({ occurrencesValidation, onSaveModal }) {
+  console.log(occurrencesValidation);
+  if (occurrencesValidation) {
+    console.log('le occorrenze sono valide');
+    return (
+      <button
+        type="button"
+        className="btn btn-primary"
+        onClick={() => onSaveModal()}
+      >
+        Salva
+      </button>
+    );
+  }
+  console.log('le occorrenze non sono valide');
+  return (
+    <button
+      type="button"
+      className="btn btn-primary disabled"
+    >
+      Salva
+    </button>
+  );
+}
+
+SaveButton.propTypes = {
+  occurrencesValidation: PropTypes.bool.isRequired,
+  onSaveModal: PropTypes.func.isRequired,
+};
+
+class ModalWeeklySchedule extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      indexRow: 0,
+      modalIsOpen: false,
+      rules: [],
+      selected: 'monday',
+      occurrences: {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: [],
+      },
+      startDate: moment(),
+      dayrow: 0,
+    };
+  }
+
+  setTableRef = (ref) => { this.tableRef = ref; }
+
+  openModal = () => {
+    this.setState({
+      modalIsOpen: true,
+    });
+  }
+
+  actionFormatter = (cell) => {
+    if (cell) {
+      return (
+        <button
+          type="button"
+          className="btn btn-warning react-bs-table-add-btn"
+          onClick={e => this.deleteRow(e, cell)}
+        >
+          <i className="glyphicon glyphicon-trash"></i>
+          Elimina
+        </button>
+      );
+    }
+    return false;
+  }
+
+  formaDidFormatter = (cell) => {
+    if (cell) {
+      console.log('che valore ho passato nella select:', cell);
+      const formaDid = aoObjectOf(
+        this.props.formeDidScheduled,
+        parseInt(cell, 10),
+        'idFormaDidattica');
+      console.log('che forma didattica tiro fuori:', formaDid);
+      return (
+        <span>
+        {formaDid.descrizione}
+        </span>
+      );
+    }
+    return '';
+  }
+
+  editRowProp = {
+    mode: 'click',
+    blurToSave: true,
+    afterSaveCell: (row, cellName, cellValue) => {
+      const occurrencesCopy = _.cloneDeep(this.state.occurrences);
+      const indexKey = aoIndexOf(this.state.occurrences[this.state.selected], row.rowId, 'rowId');
+      occurrencesCopy[this.state.selected][indexKey][cellName] = cellValue;
+      this.setState({
+        occurrences: occurrencesCopy,
+      });
+    },
+  };
+
+  addRow = () => {
+    const emptyRow = {
+      rowId: `${this.state.indexRow}`,
+      hourStart: '',
+      duration: '',
+      room: '',
+      place: '',
+      idFormaDid: '',
+    };
+    if (this.props.formeDidScheduled.length === 1) {
+      emptyRow.idFormaDid = this.props.formeDidScheduled[0].idFormaDidattica;
+    }
+    const result = this.tableRef.handleAddRow(emptyRow);
+    if (result) {
+      console.log('errore!', result);
+    } else {
+      this.setState({
+        occurrences: {
+          ...this.state.occurrences,
+          [this.state.selected]: this.state.occurrences[this.state.selected].concat([emptyRow]),
+        },
+        indexRow: this.state.indexRow + 1,
+      });
+    }
+  }
+
+  deleteRow = (event, rowId) => {
+    const indexKey = aoIndexOf(this.state.occurrences[this.state.selected], rowId, 'rowId');
+    console.log('che valori ho', rowId);
+    this.tableRef.handleDropRow(rowId);
+    const occurrencesCopy = _.cloneDeep(this.state.occurrences);
+    occurrencesCopy[this.state.selected].splice(indexKey, 1);
+    this.setState({
+      occurrences: occurrencesCopy,
+    });
+  }
+
+  handleChangeStart = (date) => {
+    this.setState({
+      startDate: date,
+    });
+  }
+
+  handleChangeEnd = (date) => {
+    this.setState({
+      endDate: date,
+    });
+  }
+
+  handleChangeDay = (selection) => {
+    this.setState({
+      selected: selection.id,
+    });
+  }
+
+  saveModal = () => {
+    const generatedOccurrences = generateDateFromUser(
+      this.state.startDate,
+      this.state.endDate,
+      this.state.occurrences);
+    console.log('ecco le date generate:', generatedOccurrences);
+    this.props.onSaveClick(this.props.registryId, generatedOccurrences);
+    this.setState({
+      modalIsOpen: false,
+      occurrences: {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: [],
+      },
+      selected: 'monday',
+      startDate: moment(),
+    });
+  }
+
+  closeModal = () => {
+    this.setState({
+      modalIsOpen: false,
+      occurrences: {
+        monday: [],
+        tuesday: [],
+        wednesday: [],
+        thursday: [],
+        friday: [],
+        saturday: [],
+        sunday: [],
+      },
+      selected: 'monday',
+      startDate: moment(),
+    });
+  }
+
+  render() {
+    const navDays = [
+      { id: 'monday', icon: '', text: 'lunedi',
+        tocount: {
+          tooltip: 'lezioni tenute il lunedi',
+          arr: this.state.occurrences.monday,
+        },
+      },
+      { id: 'tuesday', icon: '', text: 'martedi',
+        tocount: {
+          tooltip: 'lezioni tenute il tuesday',
+          arr: this.state.occurrences.tuesday,
+        },
+      },
+      { id: 'wednesday', icon: '', text: 'mercoledi',
+        tocount: {
+          tooltip: 'lezioni tenute il wednesday',
+          arr: this.state.occurrences.wednesday,
+        },
+      },
+      { id: 'thursday', icon: '', text: 'giovedi',
+        tocount: {
+          tooltip: 'lezioni tenute il thursday',
+          arr: this.state.occurrences.thursday,
+        },
+      },
+      { id: 'friday', icon: '', text: 'venerdi',
+        tocount: {
+          tooltip: 'lezioni tenute il friday',
+          arr: this.state.occurrences.friday,
+        },
+      },
+      { id: 'saturday', icon: '', text: 'sabato',
+        tocount: {
+          tooltip: 'lezioni tenute il saturday',
+          arr: this.state.occurrences.saturday,
+        },
+      },
+      { id: 'sunday', icon: '', text: 'domenica',
+        tocount: {
+          tooltip: 'lezioni tenute il sunday',
+          arr: this.state.occurrences.sunday,
+        },
+      },
+    ];
+    if (!occurrencesChecker(this.state.occurrences.monday)) {
+      navDays[0].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[0].icon = '';
+    }
+    if (!occurrencesChecker(this.state.occurrences.tuesday)) {
+      navDays[1].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[1].icon = '';
+    }
+    if (!occurrencesChecker(this.state.occurrences.wednesday)) {
+      navDays[2].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[2].icon = '';
+    }
+    if (!occurrencesChecker(this.state.occurrences.thursday)) {
+      navDays[3].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[3].icon = '';
+    }
+    if (!occurrencesChecker(this.state.occurrences.friday)) {
+      navDays[4].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[4].icon = '';
+    }
+    if (!occurrencesChecker(this.state.occurrences.saturday)) {
+      navDays[5].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[5].icon = '';
+    }
+    if (!occurrencesChecker(this.state.occurrences.sunday)) {
+      navDays[6].icon = 'glyphicon glyphicon-alert';
+    } else {
+      navDays[6].icon = '';
+    }
+
+    return (
+      <div className="row-buttons">
+        <button type="button" className="btn btn-success" onClick={this.openModal}>
+          <i className="glyphicon glyphicon-calendar"></i>
+          <span className="mg2">Orario Settimanale</span>
+        </button>
+        <Modal
+          isOpen={this.state.modalIsOpen}
+          onAfterOpen={this.afterOpenModal}
+          shouldCloseOnOverlayClick={false}
+          shouldCloseOnEscPressed={false}
+          style={customStyles}
+          className="Modal__Bootstrap modal-dialog modal-lg"
+        >
+          <div className="modal-content">
+            <div className="modal-header withaliceblue">
+              <button type="button" className="close" onClick={this.closeModal}>
+                <span aria-hidden="true">x</span>
+                <span className="sr-only">Close</span>
+              </button>
+              <h4 className="modal-title">Inserisci Orario settimanale</h4>
+            </div>
+            <div className="modal-body row no-vertical-padding">
+              <div className="row text-center range-date-picker">
+                <div className="col-md-12">
+                  <h5>STEP 1: Durata del corso</h5>
+                </div>
+                <div className="col-md-6">
+                  <span className="spanlabel">Data inizio corso *</span>
+                  <DatePicker
+                    dateFormat="DD/MM/YYYY"
+                    selected={this.state.startDate}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    onChange={this.handleChangeStart}
+                    className="inputStyle"
+                  />
+                </div>
+                <div className="col-md-6">
+                  <span className="spanlabel">Data fine corso *</span>
+                  <DatePicker
+                    dateFormat="DD/MM/YYYY"
+                    selected={this.state.endDate}
+                    startDate={this.state.startDate}
+                    endDate={this.state.endDate}
+                    onChange={this.handleChangeEnd}
+                    className="inputStyle"
+                  />
+                </div>
+              </div>
+              <div className="row text-center">
+                <div className="col-md-12">
+                  <h5>
+                    STEP 2: Orario delle lezioni
+                  </h5>
+                </div>
+              </div>
+              <div className="col-md-2 border-right no-padding">
+                <SideNav
+                  selected={this.state.selected}
+                  navs={navDays}
+                  navtype="icon-right"
+                  style={rightStyle}
+                  onSelection={this.handleChangeDay}
+                />
+              </div>
+              <div className="col-md-10">
+                <div className="row vmg5 text-right">
+                  <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <div className="btn-group btn-group-sm" role="group">
+                      <button
+                        type="button"
+                        className="btn btn-info react-bs-table-add-btn"
+                        onClick={this.addRow}
+                      >
+                        <i className="glyphicon glyphicon-plus"></i>
+                        Aggiungi lezione
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <BootstrapTable
+                  data={this.state.occurrences[this.state.selected]}
+                  cellEdit={this.editRowProp}
+                  ref={this.setTableRef}
+                >
+                  <TableHeaderColumn
+                    dataField="hourStart"
+                    editable={{ validator: hourStartValidator }}
+                  >Ora Inizio</TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="duration"
+                    editable={{ validator: durationValidator }}
+                  >Durata</TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="room"
+                    editable={{ validator: roomValidator }}
+                  >Aula</TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="place"
+                    editable={{ validator: roomValidator }}
+                  >Sede</TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="idFormaDid"
+                    dataFormat={this.formaDidFormatter}
+                    customEditor={{
+                      getElement: createFormaDidEditor,
+                      customEditorParameters: {
+                        formeDid: this.props.formeDidScheduled,
+                      },
+                    }}
+                  >Forma Did.</TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="rowId"
+                    dataFormat={this.actionFormatter}
+                    editable={false}
+                    isKey
+                  />
+                </BootstrapTable>
+              </div>
+            </div>
+            <div className="modal-footer withaliceblue">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.closeModal}
+              >
+                Annulla
+              </button>
+              <SaveButton
+                occurrencesValidation={saveButtonValidator(
+                    this.state.occurrences,
+                    this.state.startDate,
+                    this.state.endDate
+                  )}
+                onSaveModal={this.saveModal}
+              />
+            </div>
+          </div>
+        </Modal>
+      </div>
+    );
+  }
+}
+
+ModalWeeklySchedule.propTypes = {
+  registryId: PropTypes.number.isRequired,
+  formeDidScheduled: PropTypes.arrayOf(PropTypes.object),
+  onSaveClick: PropTypes.func.isRequired,
+};
+
+export default ModalWeeklySchedule;

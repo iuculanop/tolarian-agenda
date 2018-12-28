@@ -1,0 +1,27 @@
+// from unimi
+$unimi-bar-bg:             #e1e2e6;
+$unimi-bar-bord-color:     #c1c1c1;
+$unimi-logo-bg:            #003466;
+$unimi-logo-fg:            #fff;
+$unimi-logo-bg-img:        url('../images/bg-header.png');
+$unimi-logo-bg-img-height: 95px;
+
+// Fonts
+$font-family-sans-serif:  Verdana, Arial, Helvetica, sans-serif !default;
+$font-family-serif:       Georgia, "Times New Roman", Times, serif !default;
+$font-family-monospace:   Menlo, Monaco, Consolas, "Courier New", monospace !default;
+
+$headings-font-family:    "Yanone Kaffeesatz", sans-serif !default;
+
+$font-size-base:          14px;
+$font-size-h1:            floor(($font-size-base * 3)) !default;
+$font-size-h2:            floor(($font-size-base * 2.6)) !default;
+$font-size-h3:            ceil(($font-size-base * 2.15)) !default;
+$font-size-h4:            ceil(($font-size-base * 1.75)) !default;
+$font-size-h5:            ceil(($font-size-base * 1.25)) !default;
+$font-size-h6:            $font-size-base !default;
+
+// Colors
+$text-color:              rgb(83, 83, 84);
+$headings-small-color:    #ccc;
+$brand-primary:           $unimi-logo-bg;

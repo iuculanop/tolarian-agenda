@@ -1,0 +1,10 @@
+// Put your style declarations here
+
+@import '../fonts/YanoneKaffeesatz';  // CSS files should not be included with the extension
+
+@import 'bootstrap/settings';
+
+.event-panel .event-info-panel {
+  color: $text-color;
+  opacity: .85;
+}

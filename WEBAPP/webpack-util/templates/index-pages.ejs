@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="iso-8859-1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Index</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="jumbotron">
+      <div class="container">
+        <h2>Generated pages</h2>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+      <% for (var pagn in htmlWebpackPlugin.options.pages) { %>
+        <div class="col-md-4">
+          <p>
+            <a class="btn btn-default btn-block" href="<%= htmlWebpackPlugin.options.pages[pagn].link %>">
+              <%= htmlWebpackPlugin.options.pages[pagn].name %>
+            </a>
+          </p>
+        </div>
+      <% } %>
+      </div>
+    </div>
+  </body>
+</html>

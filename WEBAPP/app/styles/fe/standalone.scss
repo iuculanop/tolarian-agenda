@@ -1,0 +1,35 @@
+// Put your style declarations here
+@import 'common-variables';
+
+.inverse-highlight {
+  color: $headings-small-color;
+}
+
+.header-container {
+  background-attachment: initial;
+  background-clip: initial;
+  background-color: $unimi-logo-bg;
+  background-image: $unimi-logo-bg-img;
+  background-origin: initial;
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: initial;
+
+  .page-header {
+    border-bottom: 0;
+    margin-top: 0;
+    min-height: 95px;
+    position: relative;
+
+    h1 {
+      bottom: 0;
+      color: $unimi-logo-fg;
+      left: .4em;
+      position: absolute;
+    }
+  }
+}
+
+.container-fluid {
+  max-width: $container-desktop;
+}

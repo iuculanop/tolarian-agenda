@@ -1,0 +1,276 @@
+import React from 'react';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import ReduxAcademicYears from 'containers/fe/ReduxAcademicYears.jsx';
+import { appHistory } from 'appHistory';
+
+const tableOptions = {
+  onRowClick(row) {
+    console.log('cliccato per aprire il registro con id:', row.id_registro);
+    // window.location = `registro/${row.id_registro}/`;
+    appHistory.push(`registro/${row.id_registro}/`);
+  },
+};
+
+class RegistriDashboard extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      registri: [
+        { anno_accademico: 2014,
+          id_copertura: 10099334,
+          id_registro: 40449,
+          trasversale: 'N',
+          registroStato: 'N',
+          codAF: 'F8X-110',
+          descAF: 'INFORMATICA GENERALE',
+          codEdizione: 'F8X-110.14.1',
+          descModulo: null,
+          descTurno: 'Parte prima',
+          descFD: [{ desc: 'Lezioni', ore: 36 }],
+          descCopertura: 'Compito didattico',
+          oreRegistrate: 36,
+          orePreviste: 48,
+          dfacolta: 'Pippologia',
+          dinsegnamento: 'Pippologia applicata',
+          dstrutturaproponente: 'Struttura proponente',
+          dstrutturaresponsabile: 'Struttura responsabile',
+          dmodalitacopertura: 'Lavori forzati',
+        },
+        { anno_accademico: 2015,
+          id_copertura: 10099334,
+          id_registro: 40449,
+          trasversale: 'N',
+          registroStato: 'N',
+          codAF: 'F8X-110',
+          descAF: 'INFORMATICA GENERALE',
+          codEdizione: 'F8X-110.15.1',
+          descModulo: 'prova',
+          descTurno: 'Parte prima',
+          descFD: [{ desc: 'Lezioni', ore: 36 }, { desc: 'Esercitazioni', ore: 12 }],
+          descCopertura: 'Compito didattico',
+          oreRegistrate: 36,
+          orePreviste: 48,
+          dfacolta: 'Pippologia',
+          dinsegnamento: 'Pippologia applicata',
+          dstrutturaproponente: 'Struttura proponente',
+          dstrutturaresponsabile: 'Struttura responsabile',
+          dmodalitacopertura: 'Lavori forzati',
+        },
+        { anno_accademico: 2016,
+          id_copertura: 10099334,
+          id_registro: 40449,
+          trasversale: 'N',
+          registroStato: 'N',
+          codAF: 'F8X-110',
+          descAF: 'INFORMATICA GENERALE',
+          codEdizione: 'F8X-110.16.1',
+          descModulo: 'prova',
+          descTurno: 'Parte prima',
+          descFD: [{ desc: 'Lezioni', ore: 36 }],
+          descCopertura: 'Compito didattico',
+          oreRegistrate: 36,
+          orePreviste: 48,
+          dfacolta: 'Pippologia',
+          dinsegnamento: 'Pippologia applicata',
+          dstrutturaproponente: 'Struttura proponente',
+          dstrutturaresponsabile: 'Struttura responsabile',
+          dmodalitacopertura: 'Lavori forzati',
+        },
+      ],
+      err: null,
+      xhr: null,
+      status: 'loading',
+    };
+  }
+
+  componentDidMount() {
+    // fix for wrong table header columns bug of react-bootstrap-table
+    window.setTimeout(() => this.refs.registri.forceUpdate(), 0);
+  }
+
+  // changeYear = (event) => {
+  //   console.log('anno accademico selezionato:', event.target.value);
+  //   this.setState({
+  //     year: event.target.value,
+  //   });
+  // }
+
+  formaDidatticaFormatter = (cell) => (
+    cell.map((listValue) => `<li>${listValue.desc} (${listValue.ore})</li>`).join('')
+  )
+
+  // nomeAFTooltipper formatter per aggiungere tooltip con CdL a cui afferisce l'AF
+
+  render() {
+    return (
+      <div>
+        <div className="row">
+          <div className="col-md-3 col-sm-6 col-xs-12">
+            <div className="info-box">
+              <span className="info-box-icon bg-green">
+                <i className="fa fa-thumbs-o-up"></i>
+              </span>
+              <div className="info-box-content">
+                <span className="info-box-text">Registri Approvati e Archiviati</span>
+                <span className="info-box-number">1,410</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3 col-sm-6 col-xs-12">
+            <div className="info-box">
+              <span className="info-box-icon bg-aqua">
+                <i className="fa fa-clock-o"></i>
+              </span>
+              <div className="info-box-content">
+                <span className="info-box-text">Registri in attesa di approvazione</span>
+                <span className="info-box-number">1,410</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3 col-sm-6 col-xs-12">
+            <div className="info-box">
+              <span className="info-box-icon bg-red">
+                <i className="fa fa-bomb"></i>
+              </span>
+              <div className="info-box-content">
+                <span className="info-box-text">Messages</span>
+                <span className="info-box-number">1,410</span>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-3 col-sm-6 col-xs-12">
+            <div className="info-box">
+              <span className="info-box-icon bg-orange">
+                <i className="fa fa-pencil"></i>
+              </span>
+              <div className="info-box-content">
+                <span className="info-box-text">Messages</span>
+                <span className="info-box-number">1,410</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3"></div>
+          <div className="col-md-6">
+            <div className="callout callout-danger lead">
+              <span className="callout-icon bg-red">
+                <i className="glyphicon glyphicon-alert"></i>
+              </span>
+              <h4>Tip!</h4>
+              <p>The <a href="../starter.html">starter page</a>
+                 is a good place to start building your app if you'd like to start from scratch.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="box box-solid box-primary">
+              <div className="box-header">
+                <h3 className="box-title">
+                  Anno Accademico {this.state.year}
+                </h3>
+                <ReduxAcademicYears />
+              </div>
+              <div className="box-body">
+                <p>Tabella con registri dei corsi dell'anno corrente</p>
+                <BootstrapTable
+                  ref="registri"
+                  tableBodyClass="tabregistri"
+                  data={this.state.registri}
+                  options={tableOptions}
+                  striped
+                  hover
+                >
+                  <TableHeaderColumn
+                    dataField="codAF"
+                    isKey
+                    width="80"
+                  >Cod.AF
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="descAF"
+                    width="440"
+                  >Nome AF
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="codEdizione"
+                    dataAlign="center"
+                  >Cod.Edizione
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="descModulo"
+                  >Modulo
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="descTurno"
+                    dataAlign="center"
+                  >Turno
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="descFD"
+                    dataFormat={this.formaDidatticaFormatter}
+                  >Forma Didattica
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="descCopertura"
+                    dataAlign="center"
+                  >Mod.Copertura
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="orePreviste"
+                    dataAlign="center"
+                  >Ore Previste
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="oreRegistrate"
+                    dataAlign="center"
+                  >Ore Registrate
+                  </TableHeaderColumn>
+                  <TableHeaderColumn
+                    dataField="registroStato"
+                    dataAlign="center"
+                  >Stato
+                  </TableHeaderColumn>
+                </BootstrapTable>
+                <p>Tabella con elenco altre attività anno corrente</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-8">
+            <div className="box box-solid box-danger">
+              <div className="box-header">
+                <h3 className="box-title">
+                  Registri Critici
+                </h3>
+              </div>
+              <div className="box-body">
+                <p>Tabella con registri dell'anno corrente</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-4">
+            <div className="box box-solid box-primary">
+              <div className="box-header">
+                <h3 className="box-title">
+                  Statistiche annuali
+                </h3>
+              </div>
+              <div className="box-body">
+                <p>Tabella con stats di registri anno per anno</p>
+                <p>Tabella con stats di registri anno per anno</p>
+                <p>Tabella con stats di registri anno per anno</p>
+                <p>Tabella con stats di registri anno per anno</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
+
+export { RegistriDashboard };

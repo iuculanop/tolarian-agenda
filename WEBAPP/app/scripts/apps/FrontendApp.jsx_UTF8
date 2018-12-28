@@ -1,0 +1,137 @@
+import React, { PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { appHistory } from 'appHistory';
+import { fetchUser } from 'actions/';
+import Profile from 'components/fe/HeaderProfile.jsx';
+import ReduxSuperUser from 'containers/fe/ReduxSuperUser.jsx';
+import ReduxAuthAlert from 'containers/fe/ReduxAuthAlert.jsx';
+import ReduxErrorAlert from 'containers/fe/ReduxErrorAlert.jsx';
+import { casURL, baseURL } from 'util/AppConfig.jsx';
+import { encodeText } from 'util/EncodeUtils.jsx';
+
+function onClickBack() {
+  console.log('ho cliccato sulla home!');
+  console.log(appHistory);
+  appHistory.push('/');
+}
+/* eslint-disable */
+const authURL = casURL + baseURL;
+class FrontendApp extends React.Component {
+
+  componentDidMount() {
+    if (!this.props.isLoaded) {
+      this.props.fetchUserInfo()
+          .catch((error) => {
+            console.log('arrivato al catch', error);
+            if (error.error) {
+              const cookie = document.cookie;
+              console.log('debug 9:', cookie);
+              const idOf = cookie.indexOf('CASTGC');
+              if (!(cookie && idOf > -1)) {
+                setTimeout(window.location.assign(authURL), 2000);
+                console.log('errore!', error);
+              }
+            }
+          }
+          );
+    } else {
+      console.log('sono arrivato al controllo di redirect al CAS');
+      if (this.props.user.error) {
+        window.location.assign(authURL);
+      }
+    }
+  }
+
+  renderChildren = () => {
+    if (this.props.isLoaded && this.props.user.nomeCompleto) {
+      return this.props.children;
+    }
+    return (<p>Checking authentication</p>);
+  }
+
+  render() {
+    console.log('accesso con utente:', this.props.user);
+    console.log('otherCF:', this.props.otherCf);
+    return (
+      <div className="wrapper">
+        <header className="main-header">
+          <a href="registridoce.html" className="logo">
+            <span className="logo-mini"><b>REG</b></span>
+            <span className="logo-lg"></span>
+          </a>
+          <nav className="navbar navbar-static-top" role="navigation">
+            <Profile user={this.props.user} embodies={this.props.otherCf} />
+            <div className="navbar-custom-menu">
+              <ul className="nav navbar-nav">
+                <ReduxSuperUser />
+                <li>
+                  <a href="#" title="FAQ" data-toggle="control-sidebar">
+                    <i className="glyphicon glyphicon-question-sign"></i>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    title="Torna all'elenco registri"
+                    onClick={onClickBack}
+                    data-toggle="control-sidebar"
+                  >
+                    <i className="glyphicon glyphicon glyphicon-home"></i>
+                  </a>
+                </li>
+                <li>
+                  <a title="logout" href="https://sso.staging.unimi.it:6443/logout">
+                    <i className="glyphicon glyphicon-log-out"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </header>
+        <div className="content-wrapper">
+          <section className="content">
+            <div>{this.renderChildren()}</div>
+          </section>
+        </div>
+        <footer className="main-footer">
+          <div className="pull-right hidden-xs">
+            <a href="http://www.unimi.it">
+              {encodeText('Università degli Studi di Milano')}
+            </a>
+          </div>
+          <strong>
+            {encodeText('Copyright © 2017 Gruppo Sviluppo Div. Sistemi Informativi UniMI')}
+          </strong> All rights reserved.
+        </footer>
+        <ReduxAuthAlert />
+        <ReduxErrorAlert />
+      </div>
+    );
+  }
+}
+
+FrontendApp.propTypes = {
+  children: PropTypes.node,
+  user: PropTypes.object,
+  otherCf: PropTypes.string,
+  isLoaded: PropTypes.bool,
+  fetchUserInfo: PropTypes.func,
+};
+
+const mapStateToProps = (state) => ({
+  user: state.userInfo.data,
+  otherCf: state.userInfo.otherCF,
+  isLoaded: state.userInfo.isLoaded,
+});
+
+const mapDispatchToProps = (dispatch) => ({
+  fetchUserInfo: () => dispatch(fetchUser()),
+});
+
+const ReduxFrontendApp = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FrontendApp);
+
+export default ReduxFrontendApp;
+

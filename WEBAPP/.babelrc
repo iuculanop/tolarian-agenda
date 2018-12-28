@@ -1,0 +1,14 @@
+{
+    "presets" : ["stage-3", "es2015", "react"],
+    "plugins": [
+        ["import", { "libraryName": "antd", "style": "css" }],
+        "transform-class-properties"],
+    "env": {
+        "development": {
+            "plugins": ["import-asserts"]
+        },
+        "production": {
+            "plugins": ["transform-react-remove-prop-types","lodash"]
+        }
+    }
+}
