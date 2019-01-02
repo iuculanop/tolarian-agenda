@@ -1,3 +1,4 @@
+import { appHistory } from 'appHistory';
 import React, { PropTypes } from 'react';
 import { Modal, Input, Form, Icon } from 'antd';
 
@@ -20,11 +21,17 @@ class LoginModal extends React.Component {
 
       console.log('Received values from form ', values);
       // TODO: lanciare chiamata a authenticateUser
-      this.props.authenticateUser(values.userId, values.password);
-      // TODO: chiudere modale
-      this.setState({
-        isOpen: false,
-      });
+      this.props.authenticateUser(values.userId, values.password)
+          .then(() => {
+            // TODO: chiudere modale
+            this.setState({
+              isOpen: false,
+            });
+            appHistory.push('/');
+          })
+          .catch((error) => {
+            console.warn('errore di autenticazione: ', error.error);
+          });
     });
   }
 

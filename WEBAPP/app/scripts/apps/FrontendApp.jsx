@@ -83,8 +83,13 @@ class FrontendApp extends React.Component {
           <SideMenu />
         </Sider>
         <Layout>
-          <Header style={{ background: '#036', height: '80px', padding: 0 }}>
-            <Profile user={this.props.user} />
+          <Header
+            style={{ background: '#036',
+                     width: '100%',
+                     height: '80px',
+                     padding: 0,
+            }}
+          >
             <Menu
               theme="blue"
               mode="horizontal"
@@ -92,21 +97,7 @@ class FrontendApp extends React.Component {
               selectable={false}
             >
               <Menu.Item>
-              </Menu.Item>
-              <Menu.Item key="2">
-                <a href="#">
-                  <i className="glyphicon glyphicon-question-sign" />
-                </a>
-              </Menu.Item>
-              <Menu.Item key="home">
-                <a role="button">
-                  <i className="glyphicon glyphicon glyphicon-home" />
-                </a>
-              </Menu.Item>
-              <Menu.Item key="4">
-                <a href="#">
-                  <i className="glyphicon glyphicon-log-out" />
-                </a>
+                <Profile user={this.props.user} />
               </Menu.Item>
             </Menu>
           </Header>

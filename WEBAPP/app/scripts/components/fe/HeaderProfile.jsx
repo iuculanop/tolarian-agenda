@@ -1,18 +1,24 @@
 import React, { PropTypes } from 'react';
+import { Popover, Avatar } from 'antd';
 
 function HeaderProfile({ user }) {
   if (user.id_name) {
     let welcome = `${user.name} ${user.surname}`;
     return (
-      <div className="navbar-profile">
-        <span>{welcome}</span>
-      </div>
+      <Popover
+        placement="bottom"
+        title={welcome}
+        content="add account info here"
+        trigger="click"
+      >
+        <Avatar>
+          {welcome}
+        </Avatar>
+      </Popover>
     );
   }
   return (
-    <div className="navbar-profile">
-      <span>Utente non loggato</span>
-    </div>
+    <Avatar icon="user" />
   );
 }
 
