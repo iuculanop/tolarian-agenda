@@ -69,11 +69,11 @@ class FrontendApp extends React.Component {
 
   render() {
     return (
-      <Layout className="layout" style={{ background: '#ecf0f5', height: '100%' }}>
+      <Layout className="layout" style={{ background: '#ecf0f5', minHeight: '100vh' }}>
         <Sider
           collapsible
           collapsed={this.state.collapsed}
-          className="unimi-sider"
+          className="left-sider"
           onCollapse={this.toggle}
           width="280"
         >
