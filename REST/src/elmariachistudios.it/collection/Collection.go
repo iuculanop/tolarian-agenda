@@ -17,6 +17,7 @@ type OwnedCard struct {
 }
 
 type CardTransaction struct {
+	RId     int       `json:"r_id"`
 	IdUser  int       `json:"u_id"`
 	IdCard  int       `json:"c_id"`
 	Type    string    `json:"trans_type"`
@@ -35,7 +36,7 @@ func RetrieveCardTransactions(userId int) []CardTransaction {
 	}
 
 	fmt.Println(userId)
-	results, err := db.Query("SELECT u_id,c_id,trans_type,trans_date from mtg_card_transaction WHERE u_id = ?", userId)
+	results, err := db.Query("SELECT r_id,u_id,c_id,trans_type,trans_date from mtg_card_transaction WHERE u_id = ?", userId)
 
 	fmt.Println("recuperato i risultati della query")
 
@@ -47,7 +48,7 @@ func RetrieveCardTransactions(userId int) []CardTransaction {
 
 	for results.Next() {
 		var ct CardTransaction
-		err = results.Scan(&ct.IdUser, &ct.IdCard, &ct.Type, &ct.DTtrans)
+		err = results.Scan(&ct.RId, &ct.IdUser, &ct.IdCard, &ct.Type, &ct.DTtrans)
 
 		fmt.Print(err)
 		if err != nil {

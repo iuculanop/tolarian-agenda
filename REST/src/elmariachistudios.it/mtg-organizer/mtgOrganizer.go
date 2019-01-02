@@ -357,7 +357,7 @@ var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	transList := collection.RetrieveCardTransactions(user.Id)
 
 	fmt.Print(transList)
-	rsp := ResponseRequest{transList, "Carta rimossa", ""}
+	rsp := ResponseRequest{transList, "", ""}
 	json.NewEncoder(w).Encode(rsp)
 })
 
