@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react';
 import { Table, Row, Col, Card, Icon } from 'antd';
 import UpdateCardButton from 'components/fe/AddButton.jsx';
-import { cardQuantity } from 'util/CardCollection.jsx';
+import UpdateCardTable from 'components/fe/AddButtonTable.jsx';
+import { cardQuantity, formatQuantity } from 'util/CardCollection.jsx';
 // import { imgCardLink, tableCardLink } from 'util/NavigationUtils.jsx';
 import { tableCardLink } from 'util/NavigationUtils.jsx';
 
@@ -137,7 +138,7 @@ class ShowCards extends React.Component {
             <div className="counter">
               <Icon type="copy" />
               <span className="count">
-                {cardQuantity(card.multiverseid, this.props.collection)}
+                {formatQuantity(cardQuantity(card.multiverseid, this.props.collection))}
               </span>
             </div>
             <img className="full-width" alt={card.name} src={card.imageUrl} />
@@ -148,7 +149,7 @@ class ShowCards extends React.Component {
               idCard: card.multiverseid,
               idSet: card.set,
               quantity: cardQuantity(card.multiverseid, this.props.collection) }}
-            onUpdate={this.props.addCard}
+            onUpdate={this.props.updateCard}
             updateType="add"
           />,
             <UpdateCardButton
@@ -214,28 +215,42 @@ class ShowCards extends React.Component {
         key: 'collNumber',
       },
       {
-        title: 'Quantità posseduta',
+        title: 'Quantità posseduta(foil)',
         dataIndex: 'multiverseid',
-        render: id => cardQuantity(id, this.props.collection),
+        render: id => formatQuantity(cardQuantity(id, this.props.collection)),
+      },
+      {
+        title: 'Azioni',
+        key: 'action',
+        render: (text, record) => (
+          <UpdateCardTable
+            card={{
+              info: record,
+              quantity: cardQuantity(record.multiverseid, this.props.collection),
+            }}
+            onUpdate={this.props.updateCard}
+          />
+        ),
       },
     ];
     return (
-      <Table
-        rowKey="multiverseid"
-        className="registriTable"
-        locale={locale}
-        columns={columns}
-        dataSource={this.props.cards}
-      />
+      <div style={{ background: '#ffffff' }}>
+        <Table
+          rowKey="multiverseid"
+          className="registriTable"
+          locale={locale}
+          columns={columns}
+          dataSource={this.props.cards}
+        />
+      </div>
     );
   }
 }
 
-/* eslint-enable */
 ShowCards.propTypes = {
   cards: PropTypes.arrayOf(PropTypes.object),
   collection: PropTypes.arrayOf(PropTypes.object),
-  addCard: PropTypes.func,
+  updateCard: PropTypes.func,
   removeCard: PropTypes.func,
   viewMode: PropTypes.string,
 };

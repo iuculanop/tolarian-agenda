@@ -38,7 +38,7 @@ export function retrieveCardWS(cId) {
   );
 }
 
-export function addCardWS(cardInfo) {
+export function updateCardWS(cardInfo) {
   const authToken = sessionStorage.getItem('token') || '';
   return (
     fetch(`${wsURL}/collection/add`, {
@@ -68,3 +68,16 @@ export function removeCardWS(cardInfo) {
   );
 }
 
+export function retrieveTransactionsWS() {
+  const authToken = sessionStorage.getItem('token') || '';
+  return (
+    fetch(`${wsURL}/collection/transactions`, {
+      headers: new Headers({
+        Authorization: `Bearer ${authToken}`,
+      }),
+      method: 'GET',
+    })
+      .then(checkStatus)
+      .then(parseJSON)
+  );
+}

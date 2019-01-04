@@ -1,12 +1,23 @@
 import React from 'react';
 import _ from 'lodash';
 
+// TODO: da rivedere la risposta di ritorno, va aggiunta anche la quantita di carte foil
 export function cardQuantity(idCard, collection) {
   const ownedCard = _.find(collection, { id_card: idCard });
   if (ownedCard) {
-    return ownedCard.quantity;
+    return {
+      qty: ownedCard.quantity,
+      foilQty: ownedCard.foil_quantity,
+    };
   }
-  return 0;
+  return {
+    qty: 0,
+    foilQty: 0,
+  };
+}
+
+export function formatQuantity(card) {
+  return `${card.qty + card.foilQty} (${card.foilQty})`;
 }
 
 export function formatPrintings(printings) {

@@ -10,8 +10,9 @@ import { retrieveAllSetsWS } from 'util/Ajax/sets.jsx';
 
 import { retrieveCardsWS,
          retrieveCardWS,
-         addCardWS,
+         updateCardWS,
          removeCardWS,
+         retrieveTransactionsWS,
        } from 'util/Ajax/cards.jsx';
 
 // importing action types
@@ -20,6 +21,7 @@ import {
     SETS,
     CARDS,
     COLLECTION,
+    TRANSACTION,
 } from 'actions/actionTypes.js';
 
 // ACTIONS FOR USER
@@ -133,27 +135,27 @@ export function fetchAllSets() {
   };
 }
 // ACTIONS FOR COLLECTION
-export function addCardOngoing() {
+export function updateCardOngoing() {
   return {
-    type: COLLECTION.ADDCARD,
+    type: COLLECTION.UPDATECARD,
     payload: {},
   };
 }
 
-export function addCardCompleted(collection, error = false) {
+export function updateCardCompleted(collection, error = false) {
   return {
-    type: COLLECTION.ADDCARD_COMPLETED,
+    type: COLLECTION.UPDATECARD_COMPLETED,
     payload: collection,
     error,
   };
 }
 
-export function addCardCollection(card) {
+export function updateCardCollection(card) {
   return (dispatch) => {
-    dispatch(addCardOngoing());
-    return addCardWS(card)
+    dispatch(updateCardOngoing());
+    return updateCardWS(card)
       .then(response =>
-            dispatch(addCardCompleted(response.payLoad.collection))
+            dispatch(updateCardCompleted(response.payLoad.collection))
             , eventerror => {
               const error = new Error('Unable to add card');
               error.error = eventerror;
@@ -188,6 +190,30 @@ export function removeCardCollection(card) {
               error.error = eventerror;
               return Promise.reject(error);
             });
+  };
+}
+
+export function fetchTransactionsOngoing() {
+  return {
+    type: TRANSACTION.FETCH_ALL,
+    payload: [],
+  };
+}
+
+export function fetchTransactionsCompleted(transactions, error = false) {
+  return {
+    type: TRANSACTION.FETCH_ALL_COMPLETED,
+    payload: transactions,
+    error,
+  };
+}
+
+export function fetchTransactions() {
+  return (dispatch) => {
+    dispatch(fetchTransactionsOngoing());
+    return retrieveTransactionsWS()
+      .then(response =>
+            dispatch(fetchTransactionsCompleted(response.payLoad)));
   };
 }
 

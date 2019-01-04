@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ShowCards from 'components/fe/ShowCards.jsx';
-import { addCardCollection, removeCardCollection } from 'actions/';
+import { updateCardCollection, removeCardCollection } from 'actions/';
 
 const mapStateToProps = (state) => ({
   cards: state.cards.list,
@@ -10,7 +10,7 @@ const mapStateToProps = (state) => ({
 
 /* eslint-disable */
 const mapDispatchToProps = (dispatch) => ({
-  addCard: (card) => dispatch(addCardCollection(card)),
+  updateCard: (card) => dispatch(updateCardCollection(card)),
   removeCard: (card) => dispatch(removeCardCollection(card)),
 });
 
