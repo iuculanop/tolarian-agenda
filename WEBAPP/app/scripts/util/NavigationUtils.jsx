@@ -15,6 +15,10 @@ export function tableCardLink(record) {
   appHistory.push(`card/${record.multiverseid}`);
 }
 
+export function transactionCardLink(record) {
+  appHistory.push(`card/${record.cardInfo.multiverseid}`);
+}
+
 export function trasversalLink(record) {
   appHistory.push(`attivita/${record.idRegistro.toString()}`);
 }

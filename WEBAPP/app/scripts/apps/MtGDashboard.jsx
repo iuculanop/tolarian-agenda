@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, Card } from 'antd';
-// import { fetchTransactions } from 'actions';
+import ReduxCardTransactions from 'containers/fe/ReduxCardTransactions.jsx';
 
 // import { connect } from 'react-redux';
 
@@ -25,9 +25,7 @@ class MtGDashboard extends React.Component {
             </Card>
           </Col>
           <Col span={8}>
-            <Card>
-              <p> ultime transazioni qui.</p>
-            </Card>
+            <ReduxCardTransactions />
           </Col>
         </Row>
       </div>
