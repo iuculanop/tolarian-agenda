@@ -58,6 +58,7 @@ export function formatOccurrence(occ) {
 export const DateQuery = {
   parse: (str) => moment(str, 'YYYY-MM-DD'),
   format: (date) => date.format('YYYY-MM-DD'),
+  formatEU: (date) => date.format('DD-MM-YYYY'),
 };
 
 export const isSameDate = (date1, date2) => (

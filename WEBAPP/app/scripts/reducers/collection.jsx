@@ -20,7 +20,7 @@ const collection = (state = initialState, action) => {
         loading: false,
       };
     case COLLECTION.REMOVECARD_COMPLETED:
-    case COLLECTION.ADDCARD_COMPLETED: {
+    case COLLECTION.UPDATECARD_COMPLETED: {
       if (action.error) {
         return {
           ...state,
@@ -34,7 +34,7 @@ const collection = (state = initialState, action) => {
       };
     }
     case COLLECTION.REMOVECARD:
-    case COLLECTION.ADDCARD:
+    case COLLECTION.UPDATECARD:
     default:
       return state;
   }
