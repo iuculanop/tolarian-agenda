@@ -243,7 +243,7 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(rsp)
 })
 
-var AddCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -277,7 +277,7 @@ var AddCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 	}
 
 	logTrace.Printf("Adding card %v to collection of user %s", cardColl, user.Id)
-	user.Collection = collection.AddCard(user.Id, cardColl)
+	user.Collection = collection.UpdateCard(user.Id, cardColl)
 
 	rsp := ResponseRequest{user, "Carta Aggiunta", ""}
 	json.NewEncoder(w).Encode(rsp)
@@ -421,8 +421,8 @@ func main() {
 		HandlerFunc(CardsHandler).
 		Methods("GET")
 	r.HandleFunc("/card/{id}", CardDetailHandler).Methods("GET")
-	r.Handle("/collection/add", jwtMiddleware.Handler(AddCollHandler)).Methods("POST")
-	r.Handle("/collection/remove", jwtMiddleware.Handler(RemCollHandler)).Methods("POST")
+	r.Handle("/collection/update", jwtMiddleware.Handler(UpdateCollHandler)).Methods("POST")
+	// r.Handle("/collection/remove", jwtMiddleware.Handler(RemCollHandler)).Methods("POST")
 	r.Handle("/collection/transactions", jwtMiddleware.Handler(TransCollHandler)).
 		Methods("GET")
 	// adding business services, for now we have nothing

@@ -4,8 +4,19 @@ import (
 	"database/sql"
 	"elmariachistudios.it/transaction"
 	"fmt"
+	"github.com/MagicTheGathering/mtg-sdk-go"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
+)
+
+const (
+	plainInsert      = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?)"
+	updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
+	selectByUser     = "SELECT id_card,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	selectByUserCard = "SELECT id_card,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ? AND id_card = ?"
+	deleteByUserCard = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=?"
+	transAdded       = "INSERT INTO mtg_card_transaction (u_id,c_id,c_type,trans_type,trans_date) VALUES(?,?,?,'add',?)"
+	transRemoved     = "INSERT INTO mtg_card_transaction (u_id,c_id,c_type,trans_type,trans_date) VALUES(?,?,?,'remove',?)"
 )
 
 type OwnedCard struct {
@@ -17,11 +28,13 @@ type OwnedCard struct {
 }
 
 type CardTransaction struct {
-	RId     int       `json:"r_id"`
-	IdUser  int       `json:"u_id"`
-	IdCard  int       `json:"c_id"`
-	Type    string    `json:"trans_type"`
-	DTtrans time.Time `json:"trans_date"`
+	RId      int       `json:"r_id"`
+	IdUser   int       `json:"u_id"`
+	IdCard   int       `json:"c_id"`
+	CardType int       `json:"c_type"`
+	Type     string    `json:"trans_type"`
+	DTtrans  time.Time `json:"trans_date"`
+	CardInfo *mtg.Card `json:"cardInfo"`
 }
 
 func RetrieveCardTransactions(userId int) []CardTransaction {
@@ -36,7 +49,7 @@ func RetrieveCardTransactions(userId int) []CardTransaction {
 	}
 
 	fmt.Println(userId)
-	results, err := db.Query("SELECT r_id,u_id,c_id,trans_type,trans_date from mtg_card_transaction WHERE u_id = ?", userId)
+	results, err := db.Query("SELECT r_id,u_id,c_id,c_type,trans_type,trans_date from mtg_card_transaction WHERE u_id = ?", userId)
 
 	fmt.Println("recuperato i risultati della query")
 
@@ -48,19 +61,20 @@ func RetrieveCardTransactions(userId int) []CardTransaction {
 
 	for results.Next() {
 		var ct CardTransaction
-		err = results.Scan(&ct.RId, &ct.IdUser, &ct.IdCard, &ct.Type, &ct.DTtrans)
+		err = results.Scan(&ct.RId, &ct.IdUser, &ct.IdCard, &ct.CardType, &ct.Type, &ct.DTtrans)
 
 		fmt.Print(err)
 		if err != nil {
 			fmt.Print("sono dentro il check di errore!")
 			return []CardTransaction{}
 		}
-		fmt.Println("appending transaction to array")
+		ct.CardInfo, err = mtg.MultiverseId(ct.IdCard).Fetch()
+		// fmt.Println("appending transaction to array")
 		cts = append(cts, ct)
-		fmt.Printf("%+v", ct)
+		// fmt.Printf("%+v", ct)
 	}
 
-	fmt.Print(cts)
+	// fmt.Print(cts)
 	return cts
 }
 
@@ -75,7 +89,7 @@ func RetrieveList(userId int) []OwnedCard {
 		return collection
 	}
 
-	results, err := db.Query("SELECT id_card,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?", userId)
+	results, err := db.Query(selectByUser, userId)
 
 	if err != nil {
 		return collection
@@ -96,7 +110,7 @@ func RetrieveList(userId int) []OwnedCard {
 	return collection
 }
 
-func AddCard(userId int, cardColl OwnedCard) []OwnedCard {
+func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 	db, err := sql.Open("mysql", "root:s8s8tif8@tcp(localhost:3306)/MTGOrganizer")
 
 	defer db.Close()
@@ -105,35 +119,62 @@ func AddCard(userId int, cardColl OwnedCard) []OwnedCard {
 		return []OwnedCard{}
 	}
 
-	actualTime := time.Now().Format(time.RFC3339)
+	// recupero(se esiste) la tupla della carta da inserire in collezione da DB
+	var oc OwnedCard
+	err = db.QueryRow(selectByUserCard, userId, cardColl.IdCard).
+		Scan(&oc.IdCard, &oc.IdSet, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
 
-	stmts := []*transaction.PipelineStmt{
-		transaction.NewPipelineStmt(
-			"INSERT INTO mtg_collection VALUES(?,?,?,?,0,0) ON DUPLICATE KEY UPDATE quantity=?",
-			userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Quantity),
-		transaction.NewPipelineStmt(
-			"INSERT INTO mtg_card_transaction (u_id,c_id,trans_type,trans_date) VALUES(?,?,'add',?)",
-			userId, cardColl.IdCard, actualTime),
+	if err != nil && err != sql.ErrNoRows {
+		panic(err)
 	}
 
-	err = transaction.WithTransaction(db, func(tx transaction.Transaction) error {
+	// preparo gli statements della transazione SQL
+	stmts := []*transaction.PipelineStmt{}
+
+	// se sia la quantita normale che quella foil sono a 0 allora devo rimuovere la tupla
+	if cardColl.Quantity == 0 && cardColl.FoilQuantity == 0 {
+		stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard))
+	} else {
+		// altrimenti insert o update
+		stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+	}
+
+	// recupero il momento della richiesta di update della collezione
+	actualTime := time.Now().Format(time.RFC3339)
+
+	// se non ho gia righe esistenti vuol dire che la carta non e presente in collezione
+	if err == sql.ErrNoRows {
+		stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cardColl.Foil, actualTime))
+	}
+
+	// se invece ho righe esistenti devo verificare se si tratta di aggiunte o rimozioni
+	if err == nil {
+		//confronto le due quantità di carte normali
+		if cardColl.Quantity > oc.Quantity {
+			stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, false, actualTime))
+		}
+		if cardColl.Quantity < oc.Quantity {
+			stmts = append(stmts, transaction.NewPipelineStmt(transRemoved, userId, cardColl.IdCard, false, actualTime))
+		}
+
+		if cardColl.FoilQuantity > oc.FoilQuantity {
+			stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, true, actualTime))
+
+		}
+		if cardColl.FoilQuantity < oc.FoilQuantity {
+			stmts = append(stmts, transaction.NewPipelineStmt(transRemoved, userId, cardColl.IdCard, true, actualTime))
+
+		}
+	}
+
+	errTX := transaction.WithTransaction(db, func(tx transaction.Transaction) error {
 		_, err := transaction.RunPipeline(tx, stmts...)
 		return err
 	})
 
-	if err != nil {
-		panic(err)
+	if errTX != nil {
+		panic(errTX)
 	}
-
-	// insert, err := db.Prepare("INSERT INTO mtg_collection VALUES(?,?,?,?,0,0) ON DUPLICATE KEY UPDATE quantity=?")
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// _, err = insert.Exec(userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Quantity)
-	// if err != nil {
-	// 	panic(err)
-	// }
 
 	return RetrieveList(userId)
 
@@ -156,7 +197,7 @@ func RemoveCard(userId int, cardColl OwnedCard) []OwnedCard {
 	if cardColl.Quantity == 0 {
 		stmts = []*transaction.PipelineStmt{
 			transaction.NewPipelineStmt(
-				"DELETE FROM table_name WHERE id_owner=? AND id_card=?",
+				deleteByUserCard,
 				userId, cardColl.IdCard),
 			transaction.NewPipelineStmt(
 				"INSERT INTO mtg_card_transaction (u_id,c_id,trans_type,trans_date) VALUES(?,?,'remove',?)",
@@ -165,8 +206,8 @@ func RemoveCard(userId int, cardColl OwnedCard) []OwnedCard {
 	} else { // altrimenti faccio update
 		stmts = []*transaction.PipelineStmt{
 			transaction.NewPipelineStmt(
-				"INSERT INTO mtg_collection VALUES(?,?,?,?,0,0) ON DUPLICATE KEY UPDATE quantity=?",
-				userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Quantity),
+				updateInsert,
+				userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity),
 			transaction.NewPipelineStmt(
 				"INSERT INTO mtg_card_transaction (u_id,c_id,trans_type,trans_date) VALUES(?,?,'remove',?)",
 				userId, cardColl.IdCard, actualTime),
