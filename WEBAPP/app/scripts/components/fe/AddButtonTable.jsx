@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Form, InputNumber } from 'antd';
+import { Modal, Button, Form, InputNumber, Icon } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -53,11 +53,39 @@ class UpdateCardTable extends React.Component {
 
   render() {
     const iconType = 'plus-square-o';
-    const title = 'Aggiorna Quantità';
+    const title = this.props.card.info.name;
+    const btTitle = 'Aggiorna quantità';
     const { getFieldDecorator } = this.props.form;
+    if (this.props.viewMode === 'table') {
+      return (
+        <span>
+          <Button icon={iconType} onClick={this.showModal}>{btTitle}</Button>
+          <Modal
+            title={title}
+            visible={this.state.visible}
+            onCancel={this.closeModal}
+            onOk={this.onConfirm}
+          >
+            <p>{btTitle}</p>
+            <Form>
+              <FormItem label={"Quantità normale"}>
+                {getFieldDecorator("quantity",{ initialValue: this.props.card.quantity.qty })(
+                <InputNumber />
+              )}
+              </FormItem>
+              <FormItem label={"Quantità foil"}>
+                {getFieldDecorator("quantityFoil",{ initialValue: this.props.card.quantity.foilQty })(
+                <InputNumber />
+              )}
+              </FormItem>
+            </Form>
+          </Modal>
+        </span>
+      );
+    }
     return (
       <span>
-        <Button icon={iconType} onClick={this.showModal}>{title}</Button>
+        <Icon type={iconType} onClick={this.showModal} />
         <Modal
           title={title}
           visible={this.state.visible}
@@ -88,6 +116,7 @@ UpdateCardTable.propTypes = {
   card: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
   updateType: PropTypes.string,
+  viewMode: PropTypes.string.isRequired,
 };
 
 const WrappedUpdateCard = Form.create()(UpdateCardTable);
