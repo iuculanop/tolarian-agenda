@@ -131,24 +131,29 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 	// preparo gli statements della transazione SQL
 	stmts := []*transaction.PipelineStmt{}
 
-	// se sia la quantita normale che quella foil sono a 0 allora devo rimuovere la tupla
-	if cardColl.Quantity == 0 && cardColl.FoilQuantity == 0 {
-		stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard))
-	} else {
-		// altrimenti insert o update
-		stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
-	}
-
 	// recupero il momento della richiesta di update della collezione
 	actualTime := time.Now().Format(time.RFC3339)
 
 	// se non ho gia righe esistenti vuol dire che la carta non e presente in collezione
 	if err == sql.ErrNoRows {
+		if cardColl.Quantity == 0 && cardColl.FoilQuantity == 0 {
+			return RetrieveList(userId)
+		} else {
+			// altrimenti insert o update
+			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+		}
 		stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cardColl.Foil, actualTime))
 	}
 
 	// se invece ho righe esistenti devo verificare se si tratta di aggiunte o rimozioni
 	if err == nil {
+		// se sia la quantita normale che quella foil sono a 0 allora devo rimuovere la tupla
+		if cardColl.Quantity == 0 && cardColl.FoilQuantity == 0 {
+			stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard))
+		} else {
+			// altrimenti insert o update
+			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+		}
 		//confronto le due quantità di carte normali
 		if cardColl.Quantity > oc.Quantity {
 			stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, false, actualTime))
