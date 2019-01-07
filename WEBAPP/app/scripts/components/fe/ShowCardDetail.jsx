@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { Card, Col, Row } from 'antd';
 import { cardQuantity,
+         formatQuantity,
          formatPrintings,
          formatRulings } from 'util/CardCollection.jsx';
 
@@ -8,6 +9,7 @@ import { cardQuantity,
 class ShowCardDetail extends React.Component {
 
   render() {
+    const qty = formatQuantity(cardQuantity(this.props.card.multiverseid, this.props.collection));
     return (
       <Card title={this.props.card.name}>
         <Row gutter={16}>
@@ -37,7 +39,7 @@ class ShowCardDetail extends React.Component {
               </span>
               <span className="card-summary">
                 <strong>Quantità posseduta: </strong>
-                {cardQuantity(this.props.card.multiverseid, this.props.collection)} <br/>
+                {qty} <br/>
               </span>
               <span className="card-summary">
                 <strong>Testo: </strong><br/>
