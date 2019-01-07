@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react';
 import { Table, Row, Col, Card, Icon } from 'antd';
 import UpdateCardButton from 'components/fe/AddButton.jsx';
 import UpdateCardTable from 'components/fe/AddButtonTable.jsx';
+import ViewCard from 'components/fe/ViewCardButton.jsx';
 import { cardQuantity, formatQuantity } from 'util/CardCollection.jsx';
 // import { imgCardLink, tableCardLink } from 'util/NavigationUtils.jsx';
 import { tableCardLink } from 'util/NavigationUtils.jsx';
@@ -144,12 +145,12 @@ class ShowCards extends React.Component {
             <img className="full-width" alt={card.name} src={card.imageUrl} />
           </div>}
           actions={
-          [<UpdateCardButton
+          [<UpdateCardTable
             card={{
-              idCard: card.multiverseid,
-              idSet: card.set,
+              info: card,
               quantity: cardQuantity(card.multiverseid, this.props.collection) }}
             onUpdate={this.props.updateCard}
+            viewMode={this.props.viewMode}
             updateType="add"
           />,
             <UpdateCardButton
@@ -160,7 +161,7 @@ class ShowCards extends React.Component {
               onUpdate={this.props.removeCard}
               updateType="remove"
             />,
-            <Icon type="edit" />,
+            <ViewCard card={card} />,
             <Icon type="ellipsis" />,
           ]}
         >
@@ -229,6 +230,7 @@ class ShowCards extends React.Component {
               quantity: cardQuantity(record.multiverseid, this.props.collection),
             }}
             onUpdate={this.props.updateCard}
+            viewMode={this.props.viewMode}
           />
         ),
       },
