@@ -15,6 +15,16 @@ const columns = [
     render: text => <a>{text}</a>,
   },
   {
+    title: 'Foil',
+    dataIndex: 'c_type',
+    key: 'isFoil',
+  },
+  {
+    title: 'Set',
+    dataIndex: 'cardInfo.set',
+    key: 'set',
+  },
+  {
     title: 'Data',
     dataIndex: 'trans_date',
     key: 'dateTransaction',
