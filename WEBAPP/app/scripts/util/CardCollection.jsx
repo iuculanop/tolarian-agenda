@@ -1,7 +1,11 @@
 import React from 'react';
 import _ from 'lodash';
 
-// TODO: da rivedere la risposta di ritorno, va aggiunta anche la quantita di carte foil
+export function checkSet(setObj) {
+  if (setObj.code.charAt(0) === 'p') return true;
+  return false;
+}
+
 export function cardQuantity(idCard, collection) {
   const ownedCard = _.find(collection, { id_card: idCard });
   if (ownedCard) {

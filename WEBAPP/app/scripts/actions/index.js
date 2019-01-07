@@ -15,6 +15,8 @@ import { retrieveCardsWS,
          retrieveTransactionsWS,
        } from 'util/Ajax/cards.jsx';
 
+import { checkSet } from 'util/CardCollection.jsx';
+
 // importing action types
 import {
     USER,
@@ -115,9 +117,10 @@ export function fetchAllSetsOngoing() {
 }
 
 export function fetchAllSetsCompleted(sets) {
+  const fSets = _.reject(sets, (o) => checkSet(o));
   return {
     type: SETS.FETCH_ALL_COMPLETED,
-    payload: sets,
+    payload: fSets,
   };
 }
 
