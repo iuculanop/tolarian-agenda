@@ -41,7 +41,7 @@ export function retrieveCardWS(cId) {
 export function updateCardWS(cardInfo) {
   const authToken = sessionStorage.getItem('token') || '';
   return (
-    fetch(`${wsURL}/collection/add`, {
+    fetch(`${wsURL}/collection/update`, {
       headers: new Headers({
         Authorization: `Bearer ${authToken}`,
       }),
