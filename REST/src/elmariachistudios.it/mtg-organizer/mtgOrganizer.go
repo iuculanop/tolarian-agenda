@@ -44,31 +44,6 @@ type ResponseRequest struct {
 	ErrorMsg  string      `json:"errorMsg"`
 }
 
-// NON SERVONO PIU, DA RIMUOVERE
-// type AuthResponseRequest struct {
-// 	PayLoad   auth.User `json:"payLoad"`
-// 	ReturnMsg string    `json:"returnMsg"`
-// 	Error     string    `json:"errorMsg"`
-// }
-
-// type SetsResponseRequest struct {
-// 	PayLoad   []*mtg.Set `json:"payLoad"`
-// 	ReturnMsg string     `json:"returnMsg"`
-// 	Error     string     `json:"errorMsg"`
-// }
-
-// type CardsResponseRequest struct {
-// 	PayLoad   []*mtg.Card `json:"payLoad"`
-// 	ReturnMsg string      `json:"returnMsg"`
-// 	Error     string      `json:"errorMsg"`
-// }
-
-// type CardResponseRequest struct {
-// 	PayLoad   *mtg.Card `json:"payLoad"`
-// 	ReturnMsg string    `json:"returnMsg"`
-// 	Error     string    `json:"errorMsg"`
-// }
-
 // initLogging initializes logging settings
 func initLogging(traceH io.Writer, infoH io.Writer, warnH io.Writer, errorH io.Writer) {
 
@@ -116,6 +91,7 @@ var AuthHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 		user.Password = ""
 		user.Token = getToken(user.Username)
 		user.GetCollection()
+		user.GetFriends()
 		fmt.Printf("%+v", user)
 	} else {
 		fmt.Println(err)
@@ -361,6 +337,119 @@ var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 	json.NewEncoder(w).Encode(rsp)
 })
 
+var WishListHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	authHeader := r.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, "Bearer ")
+	// fmt.Printf("%s", tokenString[1])
+
+	token, err := jwt.Parse(tokenString[1], func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return mySigningKey, nil
+	})
+	user := auth.User{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// fmt.Printf("%+v", claims)
+		user.GetInfo(claims["username"].(string))
+		user.Password = ""
+		user.Token = getToken(user.Username)
+		// fmt.Printf("%+v", user)
+	} else {
+		fmt.Println(err)
+	}
+
+	wishList := collection.RetrieveWishlist(user.Id)
+
+	// fmt.Print(transList)
+	rsp := ResponseRequest{wishList, "", ""}
+	json.NewEncoder(w).Encode(rsp)
+})
+
+var UpdateWLHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	cardWish := collection.CardWishlist{}
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&cardWish)
+
+	authHeader := r.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, "Bearer ")
+	fmt.Printf("%s", tokenString[1])
+
+	token, err := jwt.Parse(tokenString[1], func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return mySigningKey, nil
+	})
+	user := auth.User{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Printf("%+v", claims)
+		user.GetInfo(claims["username"].(string))
+		user.Password = ""
+		user.Token = getToken(user.Username)
+		fmt.Printf("%+v", user)
+	} else {
+		fmt.Println(err)
+	}
+
+	wl := collection.UpdateWishlist(user.Id, cardWish)
+
+	rsp := ResponseRequest{wl, "Carta Aggiunta", ""}
+	json.NewEncoder(w).Encode(rsp)
+
+})
+
+var ViewProfileHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	vars := mux.Vars(r)
+
+	log.Println(vars)
+
+	authHeader := r.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, "Bearer ")
+	// fmt.Printf("%s", tokenString[1])
+
+	token, err := jwt.Parse(tokenString[1], func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return mySigningKey, nil
+	})
+
+	user := auth.User{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// TODO: implementare chiamata al db per recuperare info sull'utente richiesto.
+		fmt.Printf("%+v", claims)
+		// user.GetInfo(vars["id"])
+		user.GetInfo("s.penati")
+		user.Password = ""
+		user.GetCollection()
+		fmt.Printf("%+v", user)
+	} else {
+		fmt.Println(err)
+	}
+
+	rsp := ResponseRequest{user, "", ""}
+	json.NewEncoder(w).Encode(rsp)
+})
+
 var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
 		return mySigningKey, nil
@@ -424,6 +513,12 @@ func main() {
 	r.Handle("/collection/update", jwtMiddleware.Handler(UpdateCollHandler)).Methods("POST")
 	// r.Handle("/collection/remove", jwtMiddleware.Handler(RemCollHandler)).Methods("POST")
 	r.Handle("/collection/transactions", jwtMiddleware.Handler(TransCollHandler)).
+		Methods("GET")
+	r.Handle("/wishlist", jwtMiddleware.Handler(WishListHandler)).Methods("GET")
+	r.Handle("/wishlist/update", jwtMiddleware.Handler(UpdateWLHandler)).Methods("POST")
+	//	r.Handle("/profile/{id}", jwtMiddleware.Handler(ViewProfileHandler)).Methods("GET")
+	r.Path("/profile/{id}").
+		Handler(jwtMiddleware.Handler(ViewProfileHandler)).
 		Methods("GET")
 	// adding business services, for now we have nothing
 
