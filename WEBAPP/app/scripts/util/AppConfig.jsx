@@ -1,12 +1,9 @@
-// AMBIENTE PRODUZIONE
-// url per autenticazione cas
-export const casURL = 'https://cas.unimi.it/login?service=';
-export const baseURL = 'https://www.unimi.it/registridocenti';
-export const logoutURL = 'https://cas.unimi.it/logout';
-
+// AMBIENTE SVILUPPO
 // url webservices
-export const registriWS = 'https://www.unimi.it/ws/registridocenti';
-export const didatticaWS = 'https://www.unimi.it/ws/didattica';
+export const wsURL = 'http://localhost:9000';
+
+// AMBIENTE TEST
+// export const wsURL = 'http://elmariachistudios.it:9002';
 
 // GOOGLE ANALYTICS
 export const analytics = {

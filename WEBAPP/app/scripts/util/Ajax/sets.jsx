@@ -1,6 +1,5 @@
 import { checkStatus, parseJSON } from 'util/Ajax/responseUtils.jsx';
-
-const wsURL = 'http://localhost:9000';
+import { wsURL } from 'util/AppConfig.jsx';
 
 export function retrieveAllSetsWS() {
   const authToken = sessionStorage.getItem('token') || '';

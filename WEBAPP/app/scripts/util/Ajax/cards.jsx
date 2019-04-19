@@ -1,8 +1,7 @@
 import { checkStatus, parseJSON } from 'util/Ajax/responseUtils.jsx';
+import { wsURL } from 'util/AppConfig.jsx';
 import _ from 'lodash';
 import qsParser from 'query-string';
-
-const wsURL = 'http://localhost:9000';
 
 export function retrieveCardsWS(queryParams) {
   const authToken = sessionStorage.getItem('token') || '';
@@ -76,6 +75,35 @@ export function retrieveTransactionsWS() {
         Authorization: `Bearer ${authToken}`,
       }),
       method: 'GET',
+    })
+      .then(checkStatus)
+      .then(parseJSON)
+  );
+}
+
+export function retrieveWishlistWS() {
+  const authToken = sessionStorage.getItem('token') || '';
+  return (
+    fetch(`${wsURL}/wishlist`, {
+      headers: new Headers({
+        Authorization: `Bearer ${authToken}`,
+      }),
+      method: 'GET',
+    })
+      .then(checkStatus)
+      .then(parseJSON)
+  );
+}
+
+export function updateWishlistWS(wishCard) {
+  const authToken = sessionStorage.getItem('token') || '';
+  return (
+    fetch(`${wsURL}/wishlist/update`, {
+      headers: new Headers({
+        Authorization: `Bearer ${authToken}`,
+      }),
+      method: 'POST',
+      body: JSON.stringify(wishCard),
     })
       .then(checkStatus)
       .then(parseJSON)

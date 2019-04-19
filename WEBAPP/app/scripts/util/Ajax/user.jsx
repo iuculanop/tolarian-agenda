@@ -1,9 +1,7 @@
 // import { registriWS } from 'util/AppConfig.jsx';
 import { checkStatus, parseJSON } from 'util/Ajax/responseUtils.jsx';
+import { wsURL } from 'util/AppConfig.jsx';
 // import authFetch from 'util/Ajax/customAjaxCalls.jsx';
-
-// setting base urls for webservices
-const wsURL = 'http://localhost:9000';
 
 export function retrieveUser() {
   const authToken = sessionStorage.getItem('token') || '';
@@ -34,5 +32,19 @@ export function authenticateUserWS(userId, password) {
     })
       .then(checkStatus)
       .then(parseJSON)
+  );
+}
+
+export function viewUserWS(userId) {
+  const authToken = sessionStorage.getItem('token') || '';
+  return (
+    fetch(`${wsURL}/profile/${userId}`, {
+      headers: new Headers({
+        Authorization: `Bearer ${authToken}`,
+      }),
+    })
+      .then(checkStatus)
+      .then(parseJSON)
+      .then((response) => response.payLoad)
   );
 }
