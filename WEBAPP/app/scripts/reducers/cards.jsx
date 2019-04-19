@@ -1,4 +1,5 @@
 import { CARDS } from 'actions/actionTypes.js';
+import _ from 'lodash';
 
 const initialState = {
   filterValues: {
@@ -37,7 +38,7 @@ const cards = (state = initialState, action) => {
       }
       return {
         ...state,
-        list: action.payload.payLoad,
+        list: _.uniqBy(action.payload.payLoad, 'multiverseid'),
         loading: false,
         paginationInfo: {},
       };

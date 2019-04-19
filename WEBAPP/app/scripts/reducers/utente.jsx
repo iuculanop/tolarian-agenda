@@ -10,6 +10,7 @@ function getToken() {
 // setting initial state
 const initialState = {
   data: {},
+  otherData: {},
   isLoaded: false,
   isAuthenticated: false,
   hasToken: getToken(),
@@ -44,6 +45,16 @@ const utente = (state = initialState, action) => {
         ...state,
         data: {},
         isAuthenticated: false,
+      };
+    case USER.VIEW:
+      return {
+        ...state,
+        otherData: {},
+      };
+    case USER.VIEW_COMPLETED:
+      return {
+        ...state,
+        otherData: action.payload,
       };
     default:
       return state;

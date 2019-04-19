@@ -4,6 +4,7 @@ import _ from 'lodash';
 import {
     retrieveUser,
     authenticateUserWS,
+    viewUserWS,
 } from 'util/Ajax/user.jsx';
 
 import { retrieveAllSetsWS } from 'util/Ajax/sets.jsx';
@@ -13,6 +14,8 @@ import { retrieveCardsWS,
          updateCardWS,
          removeCardWS,
          retrieveTransactionsWS,
+         retrieveWishlistWS,
+         updateWishlistWS,
        } from 'util/Ajax/cards.jsx';
 
 import { checkSet } from 'util/CardCollection.jsx';
@@ -24,6 +27,7 @@ import {
     CARDS,
     COLLECTION,
     TRANSACTION,
+    WISHLIST,
 } from 'actions/actionTypes.js';
 
 // ACTIONS FOR USER
@@ -101,10 +105,34 @@ export function fetchUser() {
   };
 }
 
-export function changeUser(newCF) {
+export function viewUserOngoing() {
   return {
-    type: USER.CHANGE,
-    payload: newCF,
+    type: USER.VIEW,
+    payload: {},
+  };
+}
+
+export function viewUserCompleted(user, error = false) {
+  console.log('debug fetchUserCompleted value=', user);
+  return {
+    type: USER.VIEW_COMPLETED,
+    payload: user,
+    error,
+  };
+}
+
+export function viewUser(userId) {
+  return (dispatch) => {
+    dispatch(viewUserOngoing());
+    return viewUserWS(userId)
+      .then(response =>
+            dispatch(viewUserCompleted(response))
+            , eventerror => {
+              dispatch(viewUserCompleted({ error: eventerror }, true));
+              const error = new Error('Unable to retrieve user infos');
+              error.error = eventerror;
+              return Promise.reject(error);
+            });
   };
 }
 
@@ -217,6 +245,60 @@ export function fetchTransactions() {
     return retrieveTransactionsWS()
       .then(response =>
             dispatch(fetchTransactionsCompleted(response.payLoad)));
+  };
+}
+
+// ACTIONS FOR WISHLIST
+export function fetchWishlistOngoing() {
+  return {
+    type: WISHLIST.FETCH,
+    payload: [],
+  };
+}
+
+export function fetchWishlistCompleted(wishlist, error = false) {
+  return {
+    type: WISHLIST.FETCH_COMPLETED,
+    payload: wishlist,
+    error,
+  };
+}
+
+export function fetchWishlist() {
+  return (dispatch) => {
+    dispatch(fetchWishlistOngoing());
+    return retrieveWishlistWS()
+      .then(response =>
+            dispatch(fetchWishlistCompleted(response.payLoad)));
+  };
+}
+
+export function updateWishlistOngoing() {
+  return {
+    type: WISHLIST.UPDATE,
+    payload: {},
+  };
+}
+
+export function updateWishlistCompleted(wishlist, error = false) {
+  return {
+    type: WISHLIST.UPDATE_COMPLETED,
+    payload: wishlist,
+    error,
+  };
+}
+
+export function updateWishlist(card) {
+  return (dispatch) => {
+    dispatch(updateWishlistOngoing());
+    return updateWishlistWS(card)
+      .then(response =>
+            dispatch(updateWishlistCompleted(response.payLoad))
+            , eventerror => {
+              const error = new Error('Unable to update wishlist');
+              error.error = eventerror;
+              return Promise.reject(error);
+            });
   };
 }
 

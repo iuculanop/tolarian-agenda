@@ -7,6 +7,7 @@ import cards from './cards.jsx';
 import collection from './collection.jsx';
 import errorHandler from './errors.jsx';
 import transaction from './cardTransactions.jsx';
+import wishlist from './wishlist.jsx';
 
 const rootReducer = combineReducers({
   userInfo,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   cards,
   collection,
   transaction,
+  wishlist,
   errorHandler,
   routing: routerReducer,
 });
