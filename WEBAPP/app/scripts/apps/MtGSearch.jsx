@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
+import { Card } from 'antd';
 import { connect } from 'react-redux';
-import { fetchAllSets } from 'actions/';
+import { fetchAllSets, fetchWishlist } from 'actions/';
 import ReduxSearchForm from 'containers/fe/ReduxSearchForm.jsx';
 import ReduxShowCards from 'containers/fe/ReduxShowCards.jsx';
 
@@ -14,14 +15,15 @@ class MtGSearch extends React.Component {
 
   componentDidMount() {
     this.props.fetchAllSets();
+    this.props.fetchWishlist();
   }
 
   render() {
     return (
-      <div>
+      <Card>
         <ReduxSearchForm />
         <ReduxShowCards />
-      </div>
+      </Card>
     );
   }
 }
@@ -29,6 +31,7 @@ class MtGSearch extends React.Component {
 MtGSearch.propTypes = {
   isLoaded: PropTypes.bool,
   fetchAllSets: PropTypes.func.isRequired,
+  fetchWishlist: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -37,6 +40,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   fetchAllSets: () => dispatch(fetchAllSets()),
+  fetchWishlist: () => dispatch(fetchWishlist()),
 });
 
 const ReduxMtGSearch = connect(

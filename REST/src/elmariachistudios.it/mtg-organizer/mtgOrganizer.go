@@ -146,6 +146,7 @@ var CardsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	cards, err := mtg.NewQuery().
 		Where(mtg.CardSet, qp.Get("setCode")).
 		Where(mtg.CardName, qp.Get("name")).
+		OrderBy(mtg.CardNumber).
 		All()
 
 	if err != nil {

@@ -105,8 +105,7 @@ class FrontendApp extends React.Component {
             <div>{this.renderChildren()}</div>
           </Content>
           <Footer className="unimi-footer">
-            <b>Copyright ©2017 Gruppo Sviluppo,
-              Div. Sistemi Informativi UniMI
+            <b>Copyright ©2019 El Mariachi Studios
             </b> - Tutti i diritti riservati.
           </Footer>
         </Layout>

@@ -1,35 +1,17 @@
 import React, { PropTypes } from 'react';
 import { Card, Col, Row } from 'antd';
-import UpdateCard from 'components/fe/AddButtonTable.jsx';
-import { cardQuantity,
-         formatQuantity,
-         formatPrintings,
-         formatRulings,
-         cardNameFormatter } from 'util/CardCollection.jsx';
-
 
 /* eslint-disable */
-class ShowCardDetail extends React.Component {
+class ShowUserDetail extends React.Component {
 
   render() {
-    const qty = formatQuantity(cardQuantity(this.props.card.multiverseid, this.props.collection));
     return (
-      <Card title={cardNameFormatter(this.props.card,false)}>
+      <Card title={this.props.card.name}>
         <Row gutter={16}>
           <Col span={4}>
             <Row>
               <Col span={24}>
                 <img className="full-width" alt={this.props.card.name} src={this.props.card.imageUrl} />
-              </Col>
-              <Col span={24}>
-                <UpdateCard
-                  card={{
-                    info: this.props.card,
-                    quantity: cardQuantity(this.props.card.multiverseid, this.props.collection),
-                  }}
-                  onUpdate={this.props.updateCard}
-                  viewMode="table"
-                />
               </Col>
             </Row>
           </Col>
@@ -75,10 +57,9 @@ class ShowCardDetail extends React.Component {
   }
 }
 
-ShowCardDetail.propTypes = {
-  card: PropTypes.object.isRequired,
+ShowUserDetail.propTypes = {
+  user: PropTypes.object.isRequired,
   collection: PropTypes.arrayOf(PropTypes.object),
-  updateCard: PropTypes.func,
 };
 
-export default ShowCardDetail;
+export default ShowUserDetail;

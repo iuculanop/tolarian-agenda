@@ -1,13 +1,12 @@
 import React, { PropTypes } from 'react';
-import { Modal, Button, Form, InputNumber, Icon, Spin } from 'antd';
+import { Modal, Button, Form, InputNumber, Icon } from 'antd';
 
 const FormItem = Form.Item;
 
 /* eslint-disable */
-class UpdateCardTable extends React.Component {
+class UpdateWishlist extends React.Component {
   state = {
     visible: false,
-    isLoading: false,
   };
 
   showModal = () => {
@@ -17,6 +16,7 @@ class UpdateCardTable extends React.Component {
   }
 
   closeModal = () => {
+    this.props.form.resetFields();
     this.setState({
       visible: false,
     });
@@ -24,23 +24,22 @@ class UpdateCardTable extends React.Component {
 
   onConfirm = (e) => {
     e.preventDefault();
-    this.setState({ ...this.state, isLoading: true });
     this.props.form.validateFields((err, values) => {
       if (err) {
         return;
       }
       console.log('Received values of form: ', values);
       console.warn('state of card prop:', this.props.card);
-      const nc = {
-        id_card: this.props.card.info.multiverseid,
-        mtg_set: this.props.card.info.set,
+      const wlc = {
+        cardId: this.props.card.info.multiverseid,
+        name: this.props.card.info.name,
+        cardSet: this.props.card.info.set,
         quantity: values.quantity,
-        foil: (values.quantityFoil > 0 ? true : false),
-        foil_quantity: values.quantityFoil,
+        cardType: (values.quantityFoil > 0 ? true : false),
       };
-      console.log('object to send to ajax call', nc);
-      // lancio la chiamata delete al WS
-      this.props.onUpdate(nc)
+      console.log('object to send to ajax call', wlc);
+      // lancio la chiamata update al WS
+      this.props.onUpdate(wlc)
           .then((response) => {
             console.log('debug AddButtonTable, response=', response);
             if (!response.error) {
@@ -56,7 +55,7 @@ class UpdateCardTable extends React.Component {
   render() {
     const iconType = 'plus-square-o';
     const title = this.props.card.info.name;
-    const btTitle = 'Aggiorna quantità';
+    const btTitle = 'Lista Desideri';
     const { getFieldDecorator } = this.props.form;
     if (this.props.viewMode === 'table') {
       return (
@@ -67,37 +66,8 @@ class UpdateCardTable extends React.Component {
             visible={this.state.visible}
             onCancel={this.closeModal}
             onOk={this.onConfirm}
-            okText={btTitle}
           >
-            <Spin spinning={this.state.isLoading}>
-              <Form>
-                <FormItem label={"Quantità normale"}>
-                  {getFieldDecorator("quantity",{ initialValue: this.props.card.quantity.qty })(
-                  <InputNumber />
-                )}
-                </FormItem>
-                <FormItem label={"Quantità foil"}>
-                  {getFieldDecorator("quantityFoil",{ initialValue: this.props.card.quantity.foilQty })(
-                  <InputNumber />
-                )}
-                </FormItem>
-              </Form>
-            </Spin>
-          </Modal>
-        </span>
-      );
-    }
-    return (
-      <span>
-        <Icon type={iconType} onClick={this.showModal} />
-        <Modal
-          title={title}
-          visible={this.state.visible}
-          onCancel={this.closeModal}
-          onOk={this.onConfirm}
-          okText={btTitle}
-        >
-          <Spin spinning={this.state.isLoading}>
+            <p>{btTitle}</p>
             <Form>
               <FormItem label={"Quantità normale"}>
                 {getFieldDecorator("quantity",{ initialValue: this.props.card.quantity.qty })(
@@ -110,7 +80,32 @@ class UpdateCardTable extends React.Component {
               )}
               </FormItem>
             </Form>
-          </Spin>
+          </Modal>
+        </span>
+      );
+    }
+    return (
+      <span>
+        <Icon type={iconType} onClick={this.showModal} />
+        <Modal
+          title={title}
+          visible={this.state.visible}
+          onCancel={this.closeModal}
+          onOk={this.onConfirm}
+        >
+          <Form>
+            <FormItem label={"Quantità normale"}>
+              {getFieldDecorator("quantity",{ initialValue: this.props.card.quantity.qty })(
+              <InputNumber />
+            )}
+            </FormItem>
+            <FormItem label={"Quantità foil"}>
+              {getFieldDecorator("quantityFoil",{ initialValue: this.props.card.quantity.foilQty })(
+              <InputNumber />
+            )}
+            </FormItem>
+
+          </Form>
         </Modal>
       </span>
     );
@@ -118,13 +113,13 @@ class UpdateCardTable extends React.Component {
   /* eslint-enable */
 }
 
-UpdateCardTable.propTypes = {
+UpdateWishlist.propTypes = {
   card: PropTypes.object.isRequired,
   onUpdate: PropTypes.func.isRequired,
   updateType: PropTypes.string,
   viewMode: PropTypes.string.isRequired,
 };
 
-const WrappedUpdateCard = Form.create()(UpdateCardTable);
+const WrappedUpdateCard = Form.create()(UpdateWishlist);
 
 export default WrappedUpdateCard;

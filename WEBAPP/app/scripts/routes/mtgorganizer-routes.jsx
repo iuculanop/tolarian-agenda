@@ -10,6 +10,7 @@ import FrontendApp from 'apps/FrontendApp.jsx';
 import MtGDashboard from 'apps/MtGDashboard.jsx';
 import MtGSearch from 'apps/MtGSearch.jsx';
 import { CardDetail, onEnterCardDetail } from 'apps/MtGCard.jsx';
+import { UserProfile, onEnterUserProfile } from 'apps/UserProfile.jsx';
 import ReduxLogin from 'containers/fe/ReduxLogin.jsx';
 
 // import { EventDetailApp, onEnterEventDetailApp } from 'apps/EventDetailApp.jsx';
@@ -37,6 +38,11 @@ function routes(store) {
         path="card/:idCard"
         component={CardDetail}
         onEnter={_.partial(onEnterCardDetail, [store])}
+      />
+      <Route
+        path="profile/:idUser"
+        component={UserProfile}
+        onEnter={_.partial(onEnterUserProfile, [store])}
       />
     </Route>);
 }

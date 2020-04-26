@@ -1,9 +1,14 @@
 import React, { PropTypes } from 'react';
-import { Table, Row, Col, Card, Icon } from 'antd';
+import { Table, Row, Col, Card, Icon, Divider, Spin } from 'antd';
 import UpdateCardButton from 'components/fe/AddButton.jsx';
 import UpdateCardTable from 'components/fe/AddButtonTable.jsx';
+import UpdateWishlist from 'components/fe/AddWishlist.jsx';
 import ViewCard from 'components/fe/ViewCardButton.jsx';
-import { cardQuantity, formatQuantity } from 'util/CardCollection.jsx';
+import { cardQuantity,
+         formatQuantity,
+         wishQuantity,
+         cardNameFormatter,
+} from 'util/CardCollection.jsx';
 // import { imgCardLink, tableCardLink } from 'util/NavigationUtils.jsx';
 import { tableCardLink } from 'util/NavigationUtils.jsx';
 
@@ -177,9 +182,11 @@ class ShowCards extends React.Component {
     console.log('props showCard', this.props);
     if (this.props.viewMode === 'image') {
       return (
-        <Row gutter={16}>
-          {this.renderCards(this.props.cards)}
-        </Row>
+        <Spin spinning={this.props.loading}>
+          <Row gutter={16}>
+            {this.renderCards(this.props.cards)}
+          </Row>
+        </Spin>
       );
     }
     const locale = {
@@ -193,7 +200,7 @@ class ShowCards extends React.Component {
         dataIndex: 'name',
         key: 'name',
         onCellClick: tableCardLink,
-        render: text => <a>{text}</a>,
+        render: (text, row) => cardNameFormatter(row),
       },
       {
         title: 'Tipo',
@@ -224,36 +231,52 @@ class ShowCards extends React.Component {
         title: 'Azioni',
         key: 'action',
         render: (text, record) => (
-          <UpdateCardTable
-            card={{
-              info: record,
-              quantity: cardQuantity(record.multiverseid, this.props.collection),
-            }}
-            onUpdate={this.props.updateCard}
-            viewMode={this.props.viewMode}
-          />
+          <span>
+            <UpdateCardTable
+              card={{
+                info: record,
+                quantity: cardQuantity(record.multiverseid, this.props.collection),
+              }}
+              onUpdate={this.props.updateCard}
+              viewMode={this.props.viewMode}
+            />
+            <Divider type="vertical" />
+            <UpdateWishlist
+              card={{
+                info: record,
+                quantity: wishQuantity(record.multiverseid, this.props.wishlist),
+              }}
+              onUpdate={this.props.updateWishlist}
+              viewMode={this.props.viewMode}
+            />
+          </span>
         ),
       },
     ];
     return (
-      <div style={{ background: '#ffffff' }}>
-        <Table
-          rowKey="multiverseid"
-          className="registriTable"
-          locale={locale}
-          columns={columns}
-          dataSource={this.props.cards}
-        />
-      </div>
+      <Spin spinning={this.props.loading}>
+        <div style={{ background: '#ffffff' }}>
+          <Table
+            rowKey="multiverseid"
+            className="registriTable"
+            locale={locale}
+            columns={columns}
+            dataSource={this.props.cards}
+          />
+        </div>
+      </Spin>
     );
   }
 }
 
 ShowCards.propTypes = {
+  loading: PropTypes.bool,
   cards: PropTypes.arrayOf(PropTypes.object),
   collection: PropTypes.arrayOf(PropTypes.object),
+  wishlist: PropTypes.arrayOf(PropTypes.object),
   updateCard: PropTypes.func,
   removeCard: PropTypes.func,
+  updateWishlist: PropTypes.func,
   viewMode: PropTypes.string,
 };
 

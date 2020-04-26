@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import ShowCardDetail from 'components/fe/ShowCardDetail.jsx';
-import { addCardCollection } from 'actions/';
+import { updateCardCollection } from 'actions/';
 
 const mapStateToProps = (state) => ({
   card: state.cards.cardDetails,
@@ -8,7 +8,7 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  addCard: (card) => dispatch(addCardCollection(card)),
+  updateCard: (card) => dispatch(updateCardCollection(card)),
 });
 
 const ReduxCardSummary = connect(

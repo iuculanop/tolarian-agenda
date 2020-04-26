@@ -16,9 +16,14 @@ export function tableCardLink(record) {
 }
 
 export function transactionCardLink(record) {
-  appHistory.push(`card/${record.cardInfo.multiverseid}`);
+//  appHistory.push(`card/${record.cardInfo.multiverseid}`);
+  appHistory.push(`card/${record.cardId}`);
 }
 
-export function trasversalLink(record) {
-  appHistory.push(`attivita/${record.idRegistro.toString()}`);
+export function wishlistCardLink(record) {
+  appHistory.push(`card/${record.cardId}`);
+}
+
+export function friendLink(record) {
+  appHistory.push(`profile/${record.id.toString()}`);
 }

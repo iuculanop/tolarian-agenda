@@ -34,7 +34,7 @@ class CardSearchForm extends React.Component {
           {getFieldDecorator("name",{ initialValue: filterValues.name })(
             <Input
               placeholder="nome carta"
-              allowClear
+              allowClear={true}
             />
           )}
         </FormItem>

@@ -1,6 +1,6 @@
 import { appHistory } from 'appHistory';
 import React, { PropTypes } from 'react';
-import { Modal, Input, Form, Icon } from 'antd';
+import { Modal, Input, Form, Icon, Alert } from 'antd';
 
 const FormItem = Form.Item;
 
@@ -9,6 +9,7 @@ class LoginModal extends React.Component {
     super(props);
     this.state = {
       isOpen: true,
+      authError: false,
     };
   }
 
@@ -18,18 +19,22 @@ class LoginModal extends React.Component {
       if (err) {
         return;
       }
-
-      console.log('Received values from form ', values);
+      // console.log('Received values from form ', values);
       // TODO: lanciare chiamata a authenticateUser
       this.props.authenticateUser(values.userId, values.password)
           .then(() => {
             // TODO: chiudere modale
             this.setState({
+              ...this.state,
               isOpen: false,
             });
             appHistory.push('/');
           })
           .catch((error) => {
+            this.setState({
+              ...this.state,
+              authError: true,
+            });
             console.warn('errore di autenticazione: ', error.error);
           });
     });
@@ -44,6 +49,7 @@ class LoginModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
+    const errorText = 'Username e/o password errati!';
     return (
       <Modal
         title="Login"
@@ -72,8 +78,12 @@ class LoginModal extends React.Component {
                 placeholder="Password"
                 type="password"
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+                onPressEnter={this.handleSubmit}
               />)}
           </FormItem>
+          {this.state.authError &&
+            <Alert style={{ marginBottom: '10px' }} message={errorText} type="error" />
+          }
         </Form>
       </Modal>
     );
