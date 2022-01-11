@@ -12,7 +12,7 @@ export function retrieveCardsWS(queryParams) {
   });
   const qp = qsParser.stringify(filteredQP);
   return (
-    fetch(`${wsURL}/cards?${qp}`, {
+    fetch(`${wsURL}/card?${qp}`, {
       headers: new Headers({
         Authorization: `Bearer ${authToken}`,
       }),

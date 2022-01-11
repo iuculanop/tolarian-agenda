@@ -1,6 +1,6 @@
 // AMBIENTE SVILUPPO
 // url webservices
-export const wsURL = 'http://localhost:9000';
+export const wsURL = 'http://iucanhome.it:9000';
 
 // AMBIENTE TEST
 // export const wsURL = 'http://elmariachistudios.it:9002';

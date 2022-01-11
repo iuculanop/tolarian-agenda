@@ -6,7 +6,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const DBAuth string = "root:s8s8tif8@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
+const DBAuth string = "root:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
 
 type Friendship struct {
 	firstMember  int

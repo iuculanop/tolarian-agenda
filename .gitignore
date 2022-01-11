@@ -7,3 +7,6 @@ REST/log/
 REST/src/github.com/
 WEBAPP/node_modules/
 WEBAPP/dist/
+webappv2/node_modules/
+webappv2/dist/
+pat_access.txt

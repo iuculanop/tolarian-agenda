@@ -144,7 +144,8 @@ class ShowCards extends React.Component {
             <div className="counter">
               <Icon type="copy" />
               <span className="count">
-                {formatQuantity(cardQuantity(card.multiverseid, this.props.collection))}
+                {formatQuantity(cardQuantity(card.multiverseid,
+                  this.props.collection))}
               </span>
             </div>
             <img className="full-width" alt={card.name} src={card.imageUrl} />
@@ -162,7 +163,7 @@ class ShowCards extends React.Component {
               card={{
                 idCard: card.multiverseid,
                 idSet: card.set,
-                quantity: cardQuantity(card.multiverseid, this.props.collection) }}
+                quantity: cardQuantity(card.multiverseid, 10, this.props.collection) }}
               onUpdate={this.props.removeCard}
               updateType="remove"
             />,
@@ -244,7 +245,7 @@ class ShowCards extends React.Component {
             <UpdateWishlist
               card={{
                 info: record,
-                quantity: wishQuantity(record.multiverseid, this.props.wishlist),
+                quantity: wishQuantity(record.multiverseid, 10, this.props.wishlist),
               }}
               onUpdate={this.props.updateWishlist}
               viewMode={this.props.viewMode}

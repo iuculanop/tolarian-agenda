@@ -20,11 +20,11 @@ const (
 	transRemoved     = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'remove',?)"
 	plainWishInsert  = "INSERT INTO mtg_card_wishlist (u_id,c_id,c_name,c_set,c_type,quantity) VALUES(?,?,?,?,?,?)"
 	updateWishInsert = "INSERT INTO mtg_card_wishlist VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, c_set=?"
-	DBAuth           = "root:s8s8tif8@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
+	DBAuth           = "root:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
 )
 
 type OwnedCard struct {
-	IdCard       int    `json:"id_card"`
+	IdCard       string `json:"id_card"`
 	Quantity     int    `json:"quantity"`
 	IdSet        string `json:"mtg_set"`
 	Foil         bool   `json:"foil"`
@@ -243,7 +243,7 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 	}
 
 	// recupero le info della carta da aggiungere dalle api di mtg
-	cInfo, errMQ := mtg.MultiverseId(cardColl.IdCard).Fetch()
+	cInfo, errMQ := mtg.CardId(cardColl.IdCard).Fetch()
 
 	if errMQ != nil {
 		panic(errMQ)
@@ -257,7 +257,8 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 	stmts := []*transaction.PipelineStmt{}
 
 	// recupero il momento della richiesta di update della collezione
-	actualTime := time.Now().Format(time.RFC3339)
+	const createdFormat = "2006-01-02 15:04:05"
+	actualTime := time.Now().Format(createdFormat)
 
 	// se non ho gia righe esistenti vuol dire che la carta non e presente in collezione
 	if err == sql.ErrNoRows {

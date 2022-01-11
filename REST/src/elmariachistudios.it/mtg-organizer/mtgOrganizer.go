@@ -68,7 +68,8 @@ var mySigningKey = []byte("secret")
 
 var AuthHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
 
 	authHeader := r.Header.Get("Authorization")
 	tokenString := strings.Split(authHeader, "Bearer ")
@@ -121,7 +122,7 @@ func getToken(username string) string {
 
 var SetsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	sets, err := mtg.NewSetQuery().All()
 	if err != nil {
@@ -138,7 +139,7 @@ var SetsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 
 var CardsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	log.Println(r.URL.Query())
 	qp := r.URL.Query()
@@ -146,7 +147,7 @@ var CardsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	cards, err := mtg.NewQuery().
 		Where(mtg.CardSet, qp.Get("setCode")).
 		Where(mtg.CardName, qp.Get("name")).
-		OrderBy(mtg.CardNumber).
+		// OrderBy(mtg.CardNumber).
 		All()
 
 	if err != nil {
@@ -159,7 +160,7 @@ var CardsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 
 var CardDetailHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	vars := mux.Vars(r)
 
@@ -179,7 +180,7 @@ var CardDetailHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 
 var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	userAccess := Credentials{}
 	decoder := json.NewDecoder(r.Body)
@@ -495,8 +496,9 @@ func main() {
 	r := mux.NewRouter().StrictSlash(true)
 
 	// setting CORS
+	credentialsOk := handlers.AllowCredentials()
 	headersOk := handlers.AllowedHeaders([]string{"Authorization", "Content-Type"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
+	originsOk := handlers.AllowedOrigins([]string{"http://iucanhome.it:3000"})
 	methodsOk := handlers.AllowedMethods([]string{"GET", "HEAD", "POST", "PUT", "OPTIONS"})
 
 	// adding auth service
@@ -506,7 +508,7 @@ func main() {
 	r.Handle("/userInfo", jwtMiddleware.Handler(AuthHandler)).Methods("GET")
 	// r.Handle("/collection", jwtMiddleware.Handler(CollHandler)).Methods("GET")
 	r.Handle("/sets", SetsHandler).Methods("GET")
-	r.Path("/cards").
+	r.Path("/card").
 		Queries("name", "{name}", "setCode", "{setCode}").
 		HandlerFunc(CardsHandler).
 		Methods("GET")
@@ -523,6 +525,6 @@ func main() {
 		Methods("GET")
 	// adding business services, for now we have nothing
 
-	logInfo.Println(http.ListenAndServe(port, handlers.CORS(originsOk, headersOk, methodsOk)(r)))
+	logInfo.Println(http.ListenAndServe(port, handlers.CORS(credentialsOk, originsOk, headersOk, methodsOk)(r)))
 
 }
