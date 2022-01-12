@@ -2,11 +2,12 @@ package auth
 
 import (
 	"database/sql"
+
 	"elmariachistudios.it/collection"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-const DBAuth string = "root:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
+const DBAuth string = "tolagenda:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
 
 type Friendship struct {
 	firstMember  int

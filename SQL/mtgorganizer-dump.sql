@@ -19,6 +19,8 @@
 -- Table structure for table `MTG_EXPANSION_SET`
 --
 
+USE MTGOrganizer;
+
 DROP TABLE IF EXISTS `MTG_EXPANSION_SET`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

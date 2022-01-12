@@ -2,12 +2,13 @@ package collection
 
 import (
 	"database/sql"
-	"elmariachistudios.it/transaction"
 	"fmt"
+	"strings"
+	"time"
+
+	"elmariachistudios.it/transaction"
 	"github.com/MagicTheGathering/mtg-sdk-go"
 	_ "github.com/go-sql-driver/mysql"
-	"time"
-	"strings"
 )
 
 const (
@@ -20,7 +21,7 @@ const (
 	transRemoved     = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'remove',?)"
 	plainWishInsert  = "INSERT INTO mtg_card_wishlist (u_id,c_id,c_name,c_set,c_type,quantity) VALUES(?,?,?,?,?,?)"
 	updateWishInsert = "INSERT INTO mtg_card_wishlist VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, c_set=?"
-	DBAuth           = "root:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
+	DBAuth           = "tolagenda:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
 )
 
 type OwnedCard struct {
@@ -37,15 +38,15 @@ type CardTransaction struct {
 	IdCard    int       `json:"cardId"`
 	CardName  string    `json:"name"`
 	CardNames []string  `json:"names"`
-	CardSet   string	`json:"cardSet"`
+	CardSet   string    `json:"cardSet"`
 	CardType  int       `json:"cardType"`
 	Type      string    `json:"transType"`
 	DTtrans   time.Time `json:"transDate"`
-//	CardInfo *mtg.Card `json:"cardInfo"`
+	//	CardInfo *mtg.Card `json:"cardInfo"`
 }
 
 type CardWishlist struct {
-	RId 	  string   `json:"rowId"`
+	RId       string   `json:"rowId"`
 	IdCard    int      `json:"cardId"`
 	CardType  int      `json:"cardType"`
 	CardName  string   `json:"name"`
@@ -54,10 +55,10 @@ type CardWishlist struct {
 	Quantity  int      `json:"quantity"`
 }
 
-func mergeNames(card *mtg.Card) string{
+func mergeNames(card *mtg.Card) string {
 	var cnames string
 	if card.Names != nil {
-		return strings.Join(card.Names,"_")
+		return strings.Join(card.Names, "_")
 	}
 	return cnames
 }
@@ -103,7 +104,7 @@ func RetrieveCardTransactions(userId int) []CardTransaction {
 		}
 
 		if cardNames.Valid {
-			ct.CardNames = strings.Split(cardNames.String,"_")
+			ct.CardNames = strings.Split(cardNames.String, "_")
 		}
 		// ct.CardInfo, err = mtg.MultiverseId(ct.IdCard).Fetch()
 		// fmt.Println("appending transaction to array")
@@ -137,7 +138,7 @@ func RetrieveWishlist(userId int) []CardWishlist {
 	for results.Next() {
 		var cwl CardWishlist
 		var cardNames sql.NullString
-		err = results.Scan(&cwl.RId,&cwl.IdCard, &cwl.CardName, &cardNames, &cwl.CardSet, &cwl.CardType, &cwl.Quantity)
+		err = results.Scan(&cwl.RId, &cwl.IdCard, &cwl.CardName, &cardNames, &cwl.CardSet, &cwl.CardType, &cwl.Quantity)
 
 		if err != nil {
 			fmt.Print("errore nello scan!")
@@ -145,7 +146,7 @@ func RetrieveWishlist(userId int) []CardWishlist {
 		}
 
 		if cardNames.Valid {
-			cwl.CardNames = strings.Split(cardNames.String,"_")
+			cwl.CardNames = strings.Split(cardNames.String, "_")
 		}
 
 		wl = append(wl, cwl)
@@ -166,7 +167,7 @@ func UpdateWishlist(userId int, cardWish CardWishlist) []CardWishlist {
 	// recupero(se esiste) la tupla della carta da inserire in wishlist da DB
 	var cwl CardWishlist
 	err = db.QueryRow("SELECT r_id,c_id,c_name,c_set,c_type,quantity FROM mtg_card_wishlist WHERE u_id = ? AND c_id = ? AND c_type = ?", userId, cardWish.IdCard, cardWish.CardType).
-		Scan(&cwl.RId,&cwl.IdCard, &cwl.CardName, &cwl.CardSet, &cwl.CardType, &cwl.Quantity)
+		Scan(&cwl.RId, &cwl.IdCard, &cwl.CardName, &cwl.CardSet, &cwl.CardType, &cwl.Quantity)
 
 	if err != nil && err != sql.ErrNoRows {
 		panic(err)

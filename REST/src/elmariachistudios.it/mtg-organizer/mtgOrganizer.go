@@ -1,16 +1,11 @@
 package main
 
 import (
-	"elmariachistudios.it/auth"
-	"elmariachistudios.it/collection"
+	"context"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
-	"github.com/MagicTheGathering/mtg-sdk-go"
-	"github.com/auth0/go-jwt-middleware"
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gorilla/handlers"
-	"github.com/gorilla/mux"
 	"io"
 	"log"
 	"net/http"
@@ -18,6 +13,15 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"elmariachistudios.it/auth"
+	"elmariachistudios.it/collection"
+	mtg "github.com/MagicTheGathering/mtg-sdk-go"
+	jwtmiddleware "github.com/auth0/go-jwt-middleware"
+	"github.com/auth0/go-jwt-middleware/validator"
+	jwt "github.com/golang-jwt/jwt"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -32,6 +36,21 @@ var (
 	logWarning *log.Logger
 	logError   *log.Logger
 )
+
+// CustomClaimsExample contains custom data we want from the token.
+type MyCustomClaims struct {
+	Name     string `json:"name"`
+	Username string `json:"username"`
+	jwt.StandardClaims
+}
+
+// Validate does nothing for this example.
+func (c *MyCustomClaims) Validate(ctx context.Context) error {
+	if c.Username == "" {
+		return errors.New("should reject was set to true")
+	}
+	return nil
+}
 
 type Credentials struct {
 	Username string `json:"username"`
@@ -64,7 +83,12 @@ func initLogging(traceH io.Writer, infoH io.Writer, warnH io.Writer, errorH io.W
 		log.Ldate|log.Ltime|log.Lshortfile)
 }
 
-var mySigningKey = []byte("secret")
+var signKey = []byte("mtgOrganizer")
+
+var mySigningKey = func(ctx context.Context) (interface{}, error) {
+	// Our token must be signed using this data.
+	return signKey, nil
+}
 
 var AuthHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
@@ -82,15 +106,16 @@ var AuthHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println(claims["username"], claims["name"])
 		fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.GetCollection()
 		user.GetFriends()
 		fmt.Printf("%+v", user)
@@ -102,20 +127,31 @@ var AuthHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	json.NewEncoder(w).Encode(rsp)
 })
 
-func getToken(username string) string {
-	/* Create the token */
-	token := jwt.New(jwt.SigningMethodHS256)
+func getToken(username string, name string, surname string) string {
 
-	// Create a map to store our claims
-	claims := token.Claims.(jwt.MapClaims)
+	currentTime := time.Now().Unix()
+	expireTime := currentTime + 7200
 
-	/* Set token claims */
-	claims["admin"] = false
-	claims["username"] = username
-	claims["exp"] = time.Now().Add(time.Hour * 2).Unix()
+	// Create the Claims
+	claims := MyCustomClaims{
+		name + " " + surname,
+		username,
+		jwt.StandardClaims{
+			ExpiresAt: expireTime,
+			Issuer:    "MTGOrganizer",
+			Audience:  "tolagenda-webapp",
+			IssuedAt:  currentTime,
+			Subject:   "1234567890",
+		},
+	}
+
+	// Create the token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	/* Sign the token with our secret */
-	tokenString, _ := token.SignedString(mySigningKey)
+	tokenString, err := token.SignedString(signKey)
+
+	fmt.Printf("%v %v", tokenString, err)
 
 	return tokenString
 }
@@ -128,10 +164,6 @@ var SetsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	if err != nil {
 		log.Panic(err)
 	}
-
-	// for _, set := range sets {
-	// 	log.Println(set)
-	// }
 
 	rsp := ResponseRequest{sets, "Fetch eseguita.", ""}
 	json.NewEncoder(w).Encode(rsp)
@@ -147,6 +179,7 @@ var CardsHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	cards, err := mtg.NewQuery().
 		Where(mtg.CardSet, qp.Get("setCode")).
 		Where(mtg.CardName, qp.Get("name")).
+		// TODO: PARE NON FUNZIONI PIU DA DISMETTERE SE CONFERMATO
 		// OrderBy(mtg.CardNumber).
 		All()
 
@@ -201,7 +234,7 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	logTrace.Printf("User %s Authentication is %t", user.Name, isAuthenticated)
 
 	if isAuthenticated {
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.Password = ""
 		user.GetCollection()
 		// result, err := json.Marshal(user)
@@ -247,7 +280,7 @@ var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 		fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.GetCollection()
 		fmt.Printf("%+v", user)
 	} else {
@@ -288,7 +321,7 @@ var RemCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 		fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.GetCollection()
 		fmt.Printf("%+v", user)
 	} else {
@@ -325,7 +358,7 @@ var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 		// fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.GetCollection()
 		// fmt.Printf("%+v", user)
 	} else {
@@ -361,7 +394,7 @@ var WishListHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 		// fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		// fmt.Printf("%+v", user)
 	} else {
 		fmt.Println(err)
@@ -400,7 +433,7 @@ var UpdateWLHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 		fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
-		user.Token = getToken(user.Username)
+		user.Token = getToken(user.Username, user.Name, user.Surname)
 		fmt.Printf("%+v", user)
 	} else {
 		fmt.Println(err)
@@ -452,12 +485,12 @@ var ViewProfileHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(rsp)
 })
 
-var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
-	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-		return mySigningKey, nil
-	},
-	SigningMethod: jwt.SigningMethodHS256,
-})
+// var jwtMiddleware = jwtmiddleware.New(jwtmiddleware.Options{
+// 	ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
+// 		return mySigningKey, nil
+// 	},
+// 	SigningMethod: jwt.SigningMethodHS256,
+// })
 
 func init() {
 	flag.StringVar(&port, "p", ":9000", "listening port for MTGOrganizer")
@@ -492,6 +525,27 @@ func main() {
 		logTrace.Println("starting in debug mode")
 	}
 
+	// We want this struct to be filled in with
+	// our custom claims from the token.
+	customClaims := func() validator.CustomClaims {
+		return &MyCustomClaims{}
+	}
+
+	// setting up jwt validator
+	jwtvalidator, err := validator.New(
+		mySigningKey,
+		validator.HS256,
+		"MTGOrganizer",
+		[]string{"tolagenda-webapp"},
+		validator.WithCustomClaims(customClaims),
+	)
+	if err != nil {
+		log.Fatalf("failed to set up the validator: %v", err)
+	}
+
+	// setting up jwt middleware
+	jwtMiddleware := jwtmiddleware.New(jwtvalidator.ValidateToken)
+
 	// starting the server
 	r := mux.NewRouter().StrictSlash(true)
 
@@ -503,9 +557,9 @@ func main() {
 
 	// adding auth service
 	// r.Handle("/get-token", GetTokenHandler).Methods("GET")
-	r.Handle("/auth", jwtMiddleware.Handler(AuthHandler)).Methods("GET")
+	r.Handle("/auth", jwtMiddleware.CheckJWT(AuthHandler)).Methods("GET")
 	r.Handle("/login", LoginHandler).Methods("POST")
-	r.Handle("/userInfo", jwtMiddleware.Handler(AuthHandler)).Methods("GET")
+	r.Handle("/userInfo", jwtMiddleware.CheckJWT(AuthHandler)).Methods("GET")
 	// r.Handle("/collection", jwtMiddleware.Handler(CollHandler)).Methods("GET")
 	r.Handle("/sets", SetsHandler).Methods("GET")
 	r.Path("/card").
@@ -513,15 +567,15 @@ func main() {
 		HandlerFunc(CardsHandler).
 		Methods("GET")
 	r.HandleFunc("/card/{id}", CardDetailHandler).Methods("GET")
-	r.Handle("/collection/update", jwtMiddleware.Handler(UpdateCollHandler)).Methods("POST")
+	r.Handle("/collection/update", jwtMiddleware.CheckJWT(UpdateCollHandler)).Methods("POST")
 	// r.Handle("/collection/remove", jwtMiddleware.Handler(RemCollHandler)).Methods("POST")
-	r.Handle("/collection/transactions", jwtMiddleware.Handler(TransCollHandler)).
+	r.Handle("/collection/transactions", jwtMiddleware.CheckJWT(TransCollHandler)).
 		Methods("GET")
-	r.Handle("/wishlist", jwtMiddleware.Handler(WishListHandler)).Methods("GET")
-	r.Handle("/wishlist/update", jwtMiddleware.Handler(UpdateWLHandler)).Methods("POST")
+	r.Handle("/wishlist", jwtMiddleware.CheckJWT(WishListHandler)).Methods("GET")
+	r.Handle("/wishlist/update", jwtMiddleware.CheckJWT(UpdateWLHandler)).Methods("POST")
 	//	r.Handle("/profile/{id}", jwtMiddleware.Handler(ViewProfileHandler)).Methods("GET")
 	r.Path("/profile/{id}").
-		Handler(jwtMiddleware.Handler(ViewProfileHandler)).
+		Handler(jwtMiddleware.CheckJWT(ViewProfileHandler)).
 		Methods("GET")
 	// adding business services, for now we have nothing
 
