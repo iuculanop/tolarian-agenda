@@ -4,7 +4,7 @@ function Dashboard(props) {
   return (
     <>
       <h1>
-        Search
+        Dashboard
       </h1>
       {/*
       <p>

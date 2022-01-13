@@ -9,7 +9,8 @@ import './App.less';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Faq from './pages/Faq';
-import Search from './pages/Card/Search';
+import Search from './pages/Card/SearchList';
+import { Footer } from 'antd/lib/layout/layout';
 
 const { SubMenu } = Menu;
 const { Header, Content, Sider } = Layout;
@@ -24,9 +25,9 @@ function App(props) {
   }
 
   useEffect(function() {
-    console.warn('me di merda', me);
+    // console.warn('me di merda', me);
     if (me && me.value != null) {
-      console.warn('changed!');
+      // console.warn('changed!');
       setAuth(true);
     }
   }, [me]);
@@ -87,7 +88,7 @@ function App(props) {
             style={{
               padding: 24,
               margin: 0,
-              height: '100vh'
+              minHeight: '90vh'
             }}
           >
             <Routes basename={basepath}>
@@ -98,6 +99,10 @@ function App(props) {
               <Route path="*" element={<Navigate to="dashboard" />} />
             </Routes>
           </Content>
+          <Footer>
+            <b>Copyright ©2019 El Mariachi Studios
+            </b> - Tutti i diritti riservati.
+          </Footer>
         </Layout>
       </Layout>
     </Layout>

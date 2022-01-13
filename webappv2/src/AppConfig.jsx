@@ -53,7 +53,7 @@ export const api = {
         href: `${cardHref}?name=${name}&setCode=${setCode}`,
       }),
       collected: (id) => ({
-        href: `${cardHref}/bo/${id}/collected`,
+        href: `${wsBaseHref}/collection`,
       }),
       sets: () => ({
         href: `${wsBaseHref}/sets`,

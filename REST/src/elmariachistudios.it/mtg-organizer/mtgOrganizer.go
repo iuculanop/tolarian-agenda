@@ -112,13 +112,13 @@ var AuthHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		fmt.Println(claims["username"], claims["name"])
-		fmt.Printf("%+v", claims)
+		//fmt.Printf("%+v", claims)
 		user.GetInfo(claims["username"].(string))
 		user.Password = ""
 		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.GetCollection()
 		user.GetFriends()
-		fmt.Printf("%+v", user)
+		//fmt.Printf("%+v", user)
 	} else {
 		fmt.Println(err)
 	}
@@ -149,9 +149,9 @@ func getToken(username string, name string, surname string) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	/* Sign the token with our secret */
-	tokenString, err := token.SignedString(signKey)
+	tokenString, _ := token.SignedString(signKey)
 
-	fmt.Printf("%v %v", tokenString, err)
+	// fmt.Printf("%v %v", tokenString, err)
 
 	return tokenString
 }
@@ -252,6 +252,43 @@ var LoginHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request)
 	rsp := ResponseRequest{auth.User{}, "Le credenziali risultano non valide", "Autenticazione fallita."}
 	w.WriteHeader(http.StatusUnauthorized)
 	json.NewEncoder(w).Encode(rsp)
+})
+
+var CollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
+	// w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+	authHeader := r.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, "Bearer ")
+	// fmt.Printf("%s", tokenString[1])
+
+	token, err := jwt.Parse(tokenString[1], func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return signKey, nil
+	})
+	user := auth.User{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// fmt.Printf("%+v", claims)
+		user.GetInfo(claims["username"].(string))
+		user.Password = ""
+		user.Token = getToken(user.Username, user.Name, user.Surname)
+		user.GetCollection()
+		// fmt.Printf("%+v", user)
+	} else {
+		fmt.Println(err)
+	}
+
+	// collection := user.Collection
+
+	rsp := ResponseRequest{user.Collection, "Recuperata la collezione", ""}
+	json.NewEncoder(w).Encode(rsp)
+
 })
 
 var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -560,13 +597,13 @@ func main() {
 	r.Handle("/auth", jwtMiddleware.CheckJWT(AuthHandler)).Methods("GET")
 	r.Handle("/login", LoginHandler).Methods("POST")
 	r.Handle("/userInfo", jwtMiddleware.CheckJWT(AuthHandler)).Methods("GET")
-	// r.Handle("/collection", jwtMiddleware.Handler(CollHandler)).Methods("GET")
 	r.Handle("/sets", SetsHandler).Methods("GET")
 	r.Path("/card").
 		Queries("name", "{name}", "setCode", "{setCode}").
 		HandlerFunc(CardsHandler).
 		Methods("GET")
 	r.HandleFunc("/card/{id}", CardDetailHandler).Methods("GET")
+	r.Handle("/collection", jwtMiddleware.CheckJWT(CollHandler)).Methods("GET")
 	r.Handle("/collection/update", jwtMiddleware.CheckJWT(UpdateCollHandler)).Methods("POST")
 	// r.Handle("/collection/remove", jwtMiddleware.Handler(RemCollHandler)).Methods("POST")
 	r.Handle("/collection/transactions", jwtMiddleware.CheckJWT(TransCollHandler)).

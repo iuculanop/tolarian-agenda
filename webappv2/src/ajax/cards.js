@@ -1,5 +1,5 @@
 import { api } from '../AppConfig';
-
+import { getToken, setUserSession } from '../utils/common';
 import { connect, catch401s } from './utils';
 
 const getCards = (resolve, reject) => () => ({
@@ -15,13 +15,16 @@ const getCards = (resolve, reject) => () => ({
 const ajaxCards = connect(() => ({
   collection: {
     url: api.card().collected().href,
+    headers: {
+      Authorization: 'Bearer ' + getToken(),
+    },
     catch: catch401s,
   },
   sets: {
     url: api.card().sets().href,
   },
   search: (resolve,reject, cardName, setCode) => ({
-    searchedCards: {
+    searchResults: {
       url: api.card().search(cardName, setCode).href,
       method: 'GET',
       then: resolve,

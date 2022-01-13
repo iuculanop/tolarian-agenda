@@ -221,7 +221,7 @@ func RetrieveList(userId int) []OwnedCard {
 		collection = append(collection, oc)
 	}
 
-	// fmt.Print(collection)
+	// fmt.Println(collection)
 	return collection
 }
 

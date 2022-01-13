@@ -2,7 +2,7 @@ module.exports = {
     // *****
     // * antd
     'primary-color': '#547192',
-    'link-color': '#fff',
+    'link-color': '#547192',
     // use the system fonts (drop chinese fonts)
     'font-family':
       '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";',
