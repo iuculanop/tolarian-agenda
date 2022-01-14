@@ -12,9 +12,12 @@ import { cardQuantity,
   cardLink,
   cardRowKey,
 } from '../../utils/CardCollection';
+import CardUpdate from '../../components/CardUpdate';
 
 function SearchList(props) {
   const [viewMode, setViewMode] = useState('list');
+  const results = (props.searchResults && props.searchResults.value ? props.searchResults.value.payLoad : []);
+  const collection = (props.collection && props.collection.value ? props.collection.value.payLoad : []);
 
   function toggleView() {
     if (viewMode === 'list') {
@@ -43,38 +46,26 @@ function SearchList(props) {
 
   function renderCards(cards) {
     return (
-      cards.map(card => (
-        <Col key={card.multiverseid} span={3}>
+      cards.map(c => (
+        <Col key={c.multiverseid} span={3}>
           <Card
             className="mtg-card"
             cover={<div className="card-wrapper">
               <div className="counter">
                 <CopyOutlined />
                 <span className="count">
-                  {formatQuantity(cardQuantity(card.multiverseid,
-                    props.collection))}
+                  {formatQuantity(cardQuantity(c.multiverseid,
+                    collection))}
                 </span>
               </div>
-              <img className="full-width" alt={card.name} src={card.imageUrl} />
+              <img className="full-width" alt={c.name} src={c.imageUrl} />
             </div>}
             actions={
-            [<Button
-              card={{
-                info: card,
-                quantity: cardQuantity(card.multiverseid, props.collection) }}
-              onUpdate={props.updateCard}
-              viewMode={props.viewMode}
-              updateType="add"
+            [<CardUpdate 
+              card={{info: c, quantity: cardQuantity(c.multiverseid, collection)}} 
+              {...props} 
             />,
-              <Button
-                card={{
-                  idCard: card.multiverseid,
-                  idSet: card.set,
-                  quantity: cardQuantity(card.multiverseid, 10, props.collection) }}
-                onUpdate={props.removeCard}
-                updateType="remove"
-              />,
-              <Link to={cardLink(card)}><EyeOutlined /></Link>,
+              <Link to={cardLink(c)}><EyeOutlined /></Link>,
               <EllipsisOutlined />,
             ]}
           >
@@ -117,17 +108,21 @@ function SearchList(props) {
     {
       title: 'Quantità posseduta(foil)',
       dataIndex: 'multiverseid',
-      render: id => formatQuantity(cardQuantity(id, props.collection)),
+      render: id => formatQuantity(cardQuantity(id, collection)),
     },
     {
       title: 'Azioni',
       key: 'action',
       render: (text, record) => (
         <span>
+          <CardUpdate 
+            card={{info: record, quantity: cardQuantity(record.multiverseid, collection)}} 
+            {...props} 
+          />
           <Button
             card={{
               info: record,
-              quantity: cardQuantity(record.multiverseid, props.collection),
+              quantity: cardQuantity(record.multiverseid, collection),
             }}
             onUpdate={props.updateCard}
             viewMode={props.viewMode}
@@ -146,7 +141,7 @@ function SearchList(props) {
     },
   ];
 
-  const results = (props.searchResults && props.searchResults.value ? props.searchResults.value.payLoad : []);
+  
 
   return (
     <>
@@ -167,6 +162,7 @@ function SearchList(props) {
         viewMode === 'list' && 
         <Table
             rowKey={cardRowKey}
+            loading={(props.searchResults ? props.searchResults.pending : false)}
             size='small'
             columns={columns}
             dataSource={results}

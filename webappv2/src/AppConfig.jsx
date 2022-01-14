@@ -58,8 +58,8 @@ export const api = {
       sets: () => ({
         href: `${wsBaseHref}/sets`,
       }),
-      setPhase: (id) => ({
-        href: `${cardHref}/bo/${id}/phase`,
+      addCard: () => ({
+        href: `${wsBaseHref}/collection/update`,
       }),
       ownChildrens: (id) => ({
         href: `${cardHref}/bo/${id}/ownerChildren`,

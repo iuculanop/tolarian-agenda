@@ -16,6 +16,7 @@ export function cardLink(record) {
 }
 
 export function cardQuantity(idCard, collection) {
+  // console.warn('cerco la carta con id:', idCard,' nella collezione ', collection);
   const ownedCard = _.find(collection, { id_card: idCard });
   if (ownedCard) {
     return {

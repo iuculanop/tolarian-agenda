@@ -32,6 +32,19 @@ const ajaxCards = connect(() => ({
       force: true,
     }
   }),
+  addCard: (resolve, reject, cardInfo) => ({
+    collection: {
+      url: api.card().addCard().href,
+      headers: {
+        Authorization: 'Bearer ' + getToken(),
+      },
+      method: 'POST',
+      body: JSON.stringify({...cardInfo}),
+      then: resolve,
+      catch: reject,
+      force: true,
+    }
+  })
 }));
 
 export default ajaxCards;
