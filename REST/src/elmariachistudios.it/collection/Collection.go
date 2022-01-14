@@ -13,8 +13,8 @@ import (
 
 const (
 	plainInsert      = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?)"
-	updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
-	selectByUser     = "SELECT id_card,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
+	selectByUser     = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
 	selectByUserCard = "SELECT id_card,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ? AND id_card = ?"
 	deleteByUserCard = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=?"
 	transAdded       = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'add',?)"
@@ -25,11 +25,15 @@ const (
 )
 
 type OwnedCard struct {
-	IdCard       string `json:"id_card"`
-	Quantity     int    `json:"quantity"`
-	IdSet        string `json:"mtg_set"`
-	Foil         bool   `json:"foil"`
-	FoilQuantity int    `json:"foil_quantity"`
+	IdCard       string   `json:"id_card"`
+	CardName     string   `json:"card_name"`
+	CardNames    []string `json:"card_names"`
+	Rarity       string   `json:"rarity"`
+	CollNum      string   `json:"collection_number"`
+	Quantity     int      `json:"quantity"`
+	IdSet        string   `json:"mtg_set"`
+	Foil         bool     `json:"foil"`
+	FoilQuantity int      `json:"foil_quantity"`
 }
 
 type CardTransaction struct {
@@ -210,13 +214,21 @@ func RetrieveList(userId int) []OwnedCard {
 		return collection
 	}
 
+	// "SELECT id_card,c_name,c_rarity,c_collnum,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
 	for results.Next() {
 		var oc OwnedCard
-		err = results.Scan(&oc.IdCard, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
+		var cardNames sql.NullString
+		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
 
 		if err != nil {
-			return []OwnedCard{}
+			// return []OwnedCard{}
+			panic(err)
 		}
+
+		if cardNames.Valid {
+			oc.CardNames = strings.Split(cardNames.String, "_")
+		}
+
 		// fmt.Printf("%+v", oc)
 		collection = append(collection, oc)
 	}
@@ -267,7 +279,8 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 			return RetrieveList(userId)
 		} else {
 			// altrimenti insert o update
-			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
+			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
 		}
 		stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, cardColl.Foil, actualTime))
 	}
@@ -279,7 +292,7 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 			stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard))
 		} else {
 			// altrimenti insert o update
-			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
 		}
 		//confronto le due quantità di carte normali
 		if cardColl.Quantity > oc.Quantity {

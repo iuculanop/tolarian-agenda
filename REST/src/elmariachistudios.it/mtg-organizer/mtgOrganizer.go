@@ -293,7 +293,7 @@ var CollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 
 var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	cardColl := collection.OwnedCard{}
 	decoder := json.NewDecoder(r.Body)
@@ -310,7 +310,7 @@ var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -334,7 +334,7 @@ var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 
 var RemCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	cardColl := collection.OwnedCard{}
 	decoder := json.NewDecoder(r.Body)
@@ -351,7 +351,7 @@ var RemCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -375,7 +375,7 @@ var RemCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reques
 
 var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	authHeader := r.Header.Get("Authorization")
 	tokenString := strings.Split(authHeader, "Bearer ")
@@ -388,7 +388,7 @@ var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -397,7 +397,7 @@ var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 		user.Password = ""
 		user.Token = getToken(user.Username, user.Name, user.Surname)
 		user.GetCollection()
-		// fmt.Printf("%+v", user)
+		fmt.Printf("%+v", user)
 	} else {
 		fmt.Println(err)
 	}
@@ -411,7 +411,7 @@ var TransCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Requ
 
 var WishListHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	authHeader := r.Header.Get("Authorization")
 	tokenString := strings.Split(authHeader, "Bearer ")
@@ -424,7 +424,7 @@ var WishListHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -446,7 +446,7 @@ var WishListHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 
 var UpdateWLHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	cardWish := collection.CardWishlist{}
 	decoder := json.NewDecoder(r.Body)
@@ -463,7 +463,7 @@ var UpdateWLHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 	user := auth.User{}
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
@@ -485,7 +485,7 @@ var UpdateWLHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Reque
 
 var ViewProfileHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
 
 	vars := mux.Vars(r)
 
@@ -502,7 +502,7 @@ var ViewProfileHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Re
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return mySigningKey, nil
+		return signKey, nil
 	})
 
 	user := auth.User{}
