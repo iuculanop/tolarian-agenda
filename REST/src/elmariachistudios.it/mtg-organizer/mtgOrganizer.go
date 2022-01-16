@@ -327,7 +327,7 @@ var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 	logTrace.Printf("Adding card %v to collection of user %s", cardColl, user.Id)
 	user.Collection = collection.UpdateCard(user.Id, cardColl)
 
-	rsp := ResponseRequest{user, "Carta Aggiunta", ""}
+	rsp := ResponseRequest{user.Collection, "Carta Aggiunta", ""}
 	json.NewEncoder(w).Encode(rsp)
 
 })

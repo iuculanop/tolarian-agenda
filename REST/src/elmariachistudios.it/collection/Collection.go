@@ -13,8 +13,8 @@ import (
 
 const (
 	plainInsert      = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?)"
-	updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
-	selectByUser     = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
+	selectByUser     = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,c_language,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
 	selectByUserCard = "SELECT id_card,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ? AND id_card = ?"
 	deleteByUserCard = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=?"
 	transAdded       = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'add',?)"
@@ -30,6 +30,8 @@ type OwnedCard struct {
 	CardNames    []string `json:"card_names"`
 	Rarity       string   `json:"rarity"`
 	CollNum      string   `json:"collection_number"`
+	Language     string   `json:"language"`
+	IdLang       string   `json:"id_lang"`
 	Quantity     int      `json:"quantity"`
 	IdSet        string   `json:"mtg_set"`
 	Foil         bool     `json:"foil"`
@@ -214,11 +216,11 @@ func RetrieveList(userId int) []OwnedCard {
 		return collection
 	}
 
-	// "SELECT id_card,c_name,c_rarity,c_collnum,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	// "SELECT id_card,c_name,c_names,c_rarity,c_collnum,c_language,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
 	for results.Next() {
 		var oc OwnedCard
 		var cardNames sql.NullString
-		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
+		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.Language, &oc.IdSet, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
 
 		if err != nil {
 			// return []OwnedCard{}
@@ -246,6 +248,9 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 		return []OwnedCard{}
 	}
 
+	// recupero idpadre
+	multiverseId := strings.Split(cardColl.IdCard, "_")
+
 	// recupero(se esiste) la tupla della carta da inserire in collezione da DB
 	var oc OwnedCard
 	err = db.QueryRow(selectByUserCard, userId, cardColl.IdCard).
@@ -256,7 +261,7 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 	}
 
 	// recupero le info della carta da aggiungere dalle api di mtg
-	cInfo, errMQ := mtg.CardId(cardColl.IdCard).Fetch()
+	cInfo, errMQ := mtg.CardId(multiverseId[0]).Fetch()
 
 	if errMQ != nil {
 		panic(errMQ)
@@ -279,8 +284,9 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 			return RetrieveList(userId)
 		} else {
 			// altrimenti insert o update
-			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
-			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
+			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
+			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdLang, cardColl.Language, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
 		}
 		stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, cardColl.Foil, actualTime))
 	}
@@ -292,7 +298,7 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 			stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard))
 		} else {
 			// altrimenti insert o update
-			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdLang, cardColl.Language, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
 		}
 		//confronto le due quantità di carte normali
 		if cardColl.Quantity > oc.Quantity {
