@@ -30,6 +30,19 @@ export function cardQuantity(idCard, collection) {
   };
 }
 
+export function cardLanguages(record) {
+  console.warn('record', record);
+  const cl = [];
+  cl.push({ lang: 'English', value: record.multiverseid });
+  if (record.foreignNames && record.foreignNames.length > 0) {
+    record.foreignNames.forEach(element => {
+      cl.push({ lang:element.language, value: element.multiverseid });
+    });
+  }
+  console.warn('lingue disponibili:', cl);
+  return cl;
+}
+
 export function wishQuantity(cardId, wishlist) {
   const wQty = {
     qty: 0,

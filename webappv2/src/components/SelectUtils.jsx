@@ -12,3 +12,15 @@ export function generateSetSelects(sets) {
     }
     return (<></>);
 }
+
+export function generateLanguageOptions(languages) {
+    //TODO: fare caso in cui non venga passato nulla come parametro
+    if (languages) {
+        const sellang = languages.map(l => (
+            <Select.Option key={l.value} value={l.value+'_'+l.lang}>
+                {l.lang}
+            </Select.Option>
+        ))
+        return sellang;
+    }
+}

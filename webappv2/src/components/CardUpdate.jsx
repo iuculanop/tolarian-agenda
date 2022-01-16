@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Typography, Drawer, Form, InputNumber, Button, Card, message } from 'antd';
+import { Typography, Drawer, Form, InputNumber, Button, Card, message, Select, List } from 'antd';
 import { PlusSquareTwoTone } from '@ant-design/icons';
+import { cardLanguages } from '../utils/CardCollection';
+import { generateLanguageOptions } from './SelectUtils';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -18,13 +20,31 @@ function CardUpdate(props) {
         setVisible(false);
     }
 
+    const data = [
+        {
+          title: 'Ant Design Title 1',
+        },
+        {
+          title: 'Ant Design Title 2',
+        },
+        {
+          title: 'Ant Design Title 3',
+        },
+        {
+          title: 'Ant Design Title 4',
+        },
+      ];
+
     async function handleSubmit(values) {
         //window.sessionStorage.setItem('values', JSON.stringify(values));
-        // console.warn('form update-collection values:',values);
+        console.warn('form update-collection values:',values);
+        const langId = values.language.split('_');
         const nc = {
             id_card: props.card.info.multiverseid,
             card_name: props.card.info.name,
             card_names: props.card.info.names,
+            id_lang: langId[0],
+            language: langId[1],
             rarity: props.card.info.rarity,
             number: props.card.info.number,
             mtg_set: props.card.info.set,
@@ -45,6 +65,7 @@ function CardUpdate(props) {
         }
     };
 
+    
     return (
         <>
             <Link to="#" onClick={(event => onView(event))} ><PlusSquareTwoTone title="Add to collection" style={{ fontSize: '20px' }}/></Link>
@@ -56,13 +77,31 @@ function CardUpdate(props) {
                     cover={<img alt={props.card.info.name} src={props.card.info.imageUrl} />}
                 >
                 </Card>
+                <List
+                    itemLayout="vertical"
+                    dataSource={data}
+                    renderItem={item => (
+                    <List.Item>
+                        <List.Item.Meta
+                        avatar={<img src={props.card.info.imageUrl} />}
+                        title={<a href="https://ant.design">{item.title}</a>}
+                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+                        />
+                    </List.Item>
+                    )}
+                />
                 <Form 
-                    layout="inline"
+                    layout="horizontal"
                     form={form} 
                     name="update-collection"
                     initialValues={{'quantity': props.card.quantity.qty, 'foilQuantity': props.card.quantity.foilQty}} 
                     onFinish={handleSubmit}
                 >
+                    <Form.Item name="language" label="Language">
+                        <Select style={{ width: '100%' }}>
+                            {generateLanguageOptions(cardLanguages(props.card.info))}
+                        </Select>
+                    </Form.Item>
                     <Form.Item name="quantity" label="Copies Owned">
                         <InputNumber min={0} placeholder="Normal copies owned" />
                     </Form.Item>
