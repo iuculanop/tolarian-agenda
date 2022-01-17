@@ -291,6 +291,84 @@ var CollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) 
 
 })
 
+var BinderHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
+	// w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+	authHeader := r.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, "Bearer ")
+	// fmt.Printf("%s", tokenString[1])
+
+	token, err := jwt.Parse(tokenString[1], func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return signKey, nil
+	})
+	user := auth.User{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// fmt.Printf("%+v", claims)
+		user.GetInfo(claims["username"].(string))
+		user.Password = ""
+		user.Token = getToken(user.Username, user.Name, user.Surname)
+		user.GetCollection()
+		// fmt.Printf("%+v", user)
+	} else {
+		fmt.Println(err)
+	}
+
+	binders := collection.RetrieveBindersList(user.Id)
+
+	rsp := ResponseRequest{binders, "Binders retrieved!", ""}
+	json.NewEncoder(w).Encode(rsp)
+
+})
+
+var AddBinderHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
+	// w.Header().Set("Access-Control-Allow-Credentials", "true")
+
+	binder := collection.Binder{}
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&binder)
+
+	authHeader := r.Header.Get("Authorization")
+	tokenString := strings.Split(authHeader, "Bearer ")
+	// fmt.Printf("%s", tokenString[1])
+
+	token, err := jwt.Parse(tokenString[1], func(token *jwt.Token) (interface{}, error) {
+		// Don't forget to validate the alg is what you expect:
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return signKey, nil
+	})
+	user := auth.User{}
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		// fmt.Printf("%+v", claims)
+		user.GetInfo(claims["username"].(string))
+		user.Password = ""
+		user.Token = getToken(user.Username, user.Name, user.Surname)
+		user.GetCollection()
+		// fmt.Printf("%+v", user)
+	} else {
+		fmt.Println(err)
+	}
+
+	binders := collection.AddBinder(user.Id, binder.Name)
+
+	rsp := ResponseRequest{binders, "New binder created!", ""}
+	json.NewEncoder(w).Encode(rsp)
+
+})
+
 var UpdateCollHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "http://iucanhome.it:3000")
@@ -604,7 +682,9 @@ func main() {
 		Methods("GET")
 	r.HandleFunc("/card/{id}", CardDetailHandler).Methods("GET")
 	r.Handle("/collection", jwtMiddleware.CheckJWT(CollHandler)).Methods("GET")
+	r.Handle("/collection/binders", jwtMiddleware.CheckJWT(BinderHandler)).Methods("GET")
 	r.Handle("/collection/update", jwtMiddleware.CheckJWT(UpdateCollHandler)).Methods("POST")
+	r.Handle("/collection/binders/add", jwtMiddleware.CheckJWT(AddBinderHandler)).Methods("POST")
 	// r.Handle("/collection/remove", jwtMiddleware.Handler(RemCollHandler)).Methods("POST")
 	r.Handle("/collection/transactions", jwtMiddleware.CheckJWT(TransCollHandler)).
 		Methods("GET")

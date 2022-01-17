@@ -12,16 +12,18 @@ import (
 )
 
 const (
-	plainInsert      = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?)"
-	updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
-	selectByUser     = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,c_language,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
-	selectByUserCard = "SELECT id_card,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ? AND id_card = ?"
-	deleteByUserCard = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=?"
-	transAdded       = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'add',?)"
-	transRemoved     = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'remove',?)"
-	plainWishInsert  = "INSERT INTO mtg_card_wishlist (u_id,c_id,c_name,c_set,c_type,quantity) VALUES(?,?,?,?,?,?)"
-	updateWishInsert = "INSERT INTO mtg_card_wishlist VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, c_set=?"
-	DBAuth           = "tolagenda:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
+	plainInsert          = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?)"
+	updateInsert         = "INSERT INTO mtg_collection(id_owner,id_card,c_name,c_names,c_rarity,c_collnum,id_lang,c_language,mtg_set,quantity,foil,foil_quantity,id_binder) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity=?"
+	selectByUser         = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,id_lang,c_language,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	selectByUserCard     = "SELECT id_card,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ? AND id_card = ?"
+	deleteByUserCard     = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=? AND id_lang=?"
+	retrieveBinderByUser = "SELECT id_binder, id_owner, binder_name, creation_date FROM mtg_binder WHERE id_owner= ?"
+	addBinder            = "INSERT INTO mtg_binder (id_owner, binder_name, creation_date) VALUES(?,?,?)"
+	transAdded           = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'add',?)"
+	transRemoved         = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'remove',?)"
+	plainWishInsert      = "INSERT INTO mtg_card_wishlist (u_id,c_id,c_name,c_set,c_type,quantity) VALUES(?,?,?,?,?,?)"
+	updateWishInsert     = "INSERT INTO mtg_card_wishlist VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, c_set=?"
+	DBAuth               = "tolagenda:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
 )
 
 type OwnedCard struct {
@@ -36,6 +38,13 @@ type OwnedCard struct {
 	IdSet        string   `json:"mtg_set"`
 	Foil         bool     `json:"foil"`
 	FoilQuantity int      `json:"foil_quantity"`
+}
+
+type Binder struct {
+	IdBinder int       `json:"binderId"`
+	IdUser   int       `json:"userId"`
+	Name     string    `json:"binderName"`
+	DCreate  time.Time `json:"creationDate"`
 }
 
 type CardTransaction struct {
@@ -216,11 +225,11 @@ func RetrieveList(userId int) []OwnedCard {
 		return collection
 	}
 
-	// "SELECT id_card,c_name,c_names,c_rarity,c_collnum,c_language,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	// "SELECT id_card,c_name,c_names,c_rarity,c_collnum,id_language,c_language,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
 	for results.Next() {
 		var oc OwnedCard
 		var cardNames sql.NullString
-		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.Language, &oc.IdSet, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
+		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.IdLang, &oc.Language, &oc.IdSet, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
 
 		if err != nil {
 			// return []OwnedCard{}
@@ -237,6 +246,83 @@ func RetrieveList(userId int) []OwnedCard {
 
 	// fmt.Println(collection)
 	return collection
+}
+
+func RetrieveBindersList(userId int) []Binder {
+	var bs = []Binder{}
+
+	db, err := sql.Open("mysql", DBAuth)
+
+	defer db.Close()
+
+	if err != nil {
+		return bs
+	}
+
+	results, errL := db.Query(retrieveBinderByUser, userId)
+	if errL != nil {
+		panic(errL)
+	}
+
+	for results.Next() {
+		var b Binder
+		err = results.Scan(&b.IdBinder, &b.IdUser, &b.Name, &b.DCreate)
+
+		if err != nil {
+			// return []OwnedCard{}
+			panic(err)
+		}
+
+		// fmt.Printf("%+v", oc)
+		bs = append(bs, b)
+	}
+
+	// fmt.Println(collection)
+	return bs
+}
+
+func AddBinder(userId int, binderName string) []Binder {
+	db, err := sql.Open("mysql", DBAuth)
+
+	defer db.Close()
+
+	if err != nil {
+		return []Binder{}
+	}
+
+	// recupero il momento della richiesta di nuovo album
+	const createdFormat = "2006-01-02 15:04:05"
+	actualTime := time.Now().Format(createdFormat)
+
+	_, errQ := db.Query(addBinder, userId, binderName, actualTime)
+
+	if errQ != nil {
+		panic(errQ)
+	}
+
+	// la insert è andata ok, recupero tutti gli album dell'utente
+	results, errL := db.Query(retrieveBinderByUser, userId)
+	if errL != nil {
+		panic(errL)
+	}
+
+	var bs = []Binder{}
+
+	for results.Next() {
+		var b Binder
+		err = results.Scan(&b.IdBinder, &b.IdUser, &b.Name, &b.DCreate)
+
+		if err != nil {
+			// return []OwnedCard{}
+			panic(err)
+		}
+
+		// fmt.Printf("%+v", oc)
+		bs = append(bs, b)
+	}
+
+	// fmt.Println(collection)
+	return bs
 }
 
 func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
@@ -284,9 +370,25 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 			return RetrieveList(userId)
 		} else {
 			// altrimenti insert o update
-			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
-			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity= ?"
-			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdLang, cardColl.Language, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+			// updateInsert         = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity=?"
+			stmts = append(stmts, transaction.NewPipelineStmt(
+				updateInsert,
+				userId,
+				cardColl.IdCard,
+				cInfo.Name,
+				mergeNames(cInfo),
+				cInfo.Rarity,
+				cInfo.Number,
+				cardColl.IdLang,
+				cardColl.Language,
+				cardColl.IdSet,
+				cardColl.Quantity,
+				cardColl.Foil,
+				cardColl.FoilQuantity,
+				0,
+				cardColl.Quantity,
+				cardColl.FoilQuantity,
+			))
 		}
 		stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, cardColl.Foil, actualTime))
 	}
@@ -294,11 +396,30 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 	// se invece ho righe esistenti devo verificare se si tratta di aggiunte o rimozioni
 	if err == nil {
 		// se sia la quantita normale che quella foil sono a 0 allora devo rimuovere la tupla
+		// deleteByUserCard     = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=? AND id_lang=?"
 		if cardColl.Quantity == 0 && cardColl.FoilQuantity == 0 {
-			stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard))
+			stmts = append(stmts, transaction.NewPipelineStmt(deleteByUserCard, userId, cardColl.IdCard, cardColl.IdLang))
 		} else {
 			// altrimenti insert o update
-			stmts = append(stmts, transaction.NewPipelineStmt(updateInsert, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Rarity, cInfo.Number, cardColl.IdLang, cardColl.Language, cardColl.IdSet, cardColl.Quantity, cardColl.Foil, cardColl.FoilQuantity, cardColl.Quantity, cardColl.FoilQuantity))
+			// updateInsert     = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity=?"
+			stmts = append(stmts, transaction.NewPipelineStmt(
+				updateInsert,
+				userId,
+				cardColl.IdCard,
+				cInfo.Name,
+				mergeNames(cInfo),
+				cInfo.Rarity,
+				cInfo.Number,
+				cardColl.IdLang,
+				cardColl.Language,
+				cardColl.IdSet,
+				cardColl.Quantity,
+				cardColl.Foil,
+				cardColl.FoilQuantity,
+				0,
+				cardColl.Quantity,
+				cardColl.FoilQuantity,
+			))
 		}
 		//confronto le due quantità di carte normali
 		if cardColl.Quantity > oc.Quantity {
