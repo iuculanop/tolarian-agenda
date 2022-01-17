@@ -24,3 +24,14 @@ export function generateLanguageOptions(languages) {
         return sellang;
     }
 }
+
+export function generateBinderOptions(binders) {
+    const selbinders = [];
+    selbinders.push(<Select.Option key="default" value="0">No binder</Select.Option>);
+    if (binders.length > 0) {
+        binders.forEach(element => {
+            selbinders.push(<Select.Option key={element.binderId} value={element.binderId}>{element.binderName}</Select.Option>)
+        });
+    }
+    return selbinders;
+}

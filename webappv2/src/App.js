@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Faq from './pages/Faq';
 import Search from './pages/Card/SearchList';
+import Collection from './pages/Collection';
 import { Footer } from 'antd/lib/layout/layout';
 
 const { SubMenu } = Menu;
@@ -94,6 +95,7 @@ function App(props) {
             <Routes basename={basepath}>
               <Route path="search" element={<Search />} />
               <Route path="dashboard" element={<Dashboard />} />
+              <Route path="collection" element={<Collection />} />
               <Route path="login" element={<Login />} />
               <Route path="faq" element={<Faq />} />
               <Route path="*" element={<Navigate to="dashboard" />} />

@@ -23,6 +23,13 @@ const ajaxCards = connect(() => ({
   sets: {
     url: api.card().sets().href,
   },
+  binders: {
+    url: api.card().binders().href,
+    headers: {
+      Authorization: 'Bearer ' + getToken(),
+    },
+    catch: catch401s,
+  },
   search: (resolve,reject, cardName, setCode) => ({
     searchResults: {
       url: api.card().search(cardName, setCode).href,
@@ -44,7 +51,20 @@ const ajaxCards = connect(() => ({
       catch: reject,
       force: true,
     }
-  })
+  }),
+  addBinder: (resolve,reject, binderInfo) => ({
+    binders: {
+      url: api.card().addBinder().href,
+      headers: {
+        Authorization: 'Bearer ' + getToken(),
+      },
+      method: 'POST',
+      body: JSON.stringify({...binderInfo}),
+      then: resolve,
+      catch: reject,
+      force: true,
+    }
+  }),
 }));
 
 export default ajaxCards;

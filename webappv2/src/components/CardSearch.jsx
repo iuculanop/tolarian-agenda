@@ -69,65 +69,34 @@ function CardSearch({ onSearch, changeCtx, sets, results}) {
     }
 
     return (
-        <Card>
-            <Tabs 
-              style={{ alignItems: 'center' }}
-              tabPosition="top" 
-              size="large" 
-              tabBarStyle={{textAlign: 'center'}}
-              onChange={handleChangeTab}
+        <Card className="search-bar">
+            <Form 
+                style={{ alignItems: 'center', justifyContent: 'center' }}
+                layout={formLayout} 
+                form={form} 
+                name="search-cards"
+                initialValues={{'cardName': values.cardName, 'setCode': values.setCode}} 
+                onFinish={handleSubmit}
             >
-                <TabPane tab={<span><SearchOutlined />Search MTG Database</span>} key="name">
-                    <Form 
-                      layout={formLayout} 
-                      form={form} 
-                      name="search-cards"
-                      initialValues={{'cardName': values.cardName, 'setCode': values.setCode}} 
-                      onFinish={handleSubmit}
+                <Form.Item name="cardName" label="Card Name">
+                    <Input placeholder="Insert card name here" />
+                </Form.Item>
+                <Form.Item name="setCode" label="Expansion Set Name">
+                    <Select 
+                        showSearch
+                        allowClear
+                        filterOption={scanInput}
+                        style={{ width: 400 }}
                     >
-                        <Form.Item name="cardName" label="Card Name">
-                            <Input placeholder="Insert card name here" />
-                        </Form.Item>
-                        <Form.Item name="setCode" label="Expansion Set Name">
-                            <Select 
-                                showSearch
-                                allowClear
-                                filterOption={scanInput}
-                                style={{ width: 400 }}
-                            >
-                                {generateSetSelects(sets)}
-                            </Select>
-                        </Form.Item>
-                        <Form.Item>
-                        <Button type="primary" htmlType="submit" >
-                            Cerca
-                        </Button>
-                        </Form.Item>
-                    </Form>
-                </TabPane>
-                <TabPane tab={<span><FileSearchOutlined />Search MTG Collection</span>} key="phone">
-                    <Form 
-                      layout={formLayout} 
-                      form={formPhone} 
-                      name="search-people"
-                      initialValues={values} 
-                      onFinish={handleSubmit}
-                    >
-                        <Form.Item label="Telefono" name="phone">
-                            <Input
-                            prefix={<PhoneOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                            placeholder="Telefono"
-                            />
-                        </Form.Item>
-                        <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                            Cerca
-                        </Button>
-                        </Form.Item>
-                    </Form>
-                </TabPane>
-            </Tabs>
-            
+                        {generateSetSelects(sets)}
+                    </Select>
+                </Form.Item>
+                <Form.Item>
+                <Button type="primary" htmlType="submit" >
+                    Cerca
+                </Button>
+                </Form.Item>
+            </Form>
         </Card>
     );
 }

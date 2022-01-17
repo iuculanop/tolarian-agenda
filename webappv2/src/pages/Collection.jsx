@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Button, message, Row, Col, Tooltip, Divider, Table, Card, Spin } from 'antd';
+import { Button, message, Row, Col, Tooltip, Divider, Table, Card, Spin, Tabs } from 'antd';
 import { Link } from 'react-router-dom';
-import { UnorderedListOutlined, TableOutlined, CopyOutlined, EllipsisOutlined, EyeOutlined } from '@ant-design/icons';
+import { UnorderedListOutlined, TableOutlined, DatabaseOutlined, EllipsisOutlined, EyeOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
-import ajaxCards from '../../ajax/cards';
-import CardSearch from '../../components/CardSearch';
+import ajaxCards from '../ajax/cards';
+import CardSearch from '../components/CardSearch';
 import { cardQuantity,
   formatQuantity,
   wishQuantity,
@@ -12,13 +12,17 @@ import { cardQuantity,
   cardLink,
   cardRowKey,
   getCollectedItems,
-} from '../../utils/CardCollection';
-import CardUpdate from '../../components/CardUpdate';
-import MtgCard from '../../components/MtgCard';
+} from '../utils/CardCollection';
+import CardUpdate from '../components/CardUpdate';
+import MtgBinder from '../components/MtgBinder';
+import MtgCard from '../components/MtgCard';
 
-function SearchList(props) {
+const { TabPane } = Tabs;
+
+function Collection(props) {
   const [viewMode, setViewMode] = useState('list');
   const results = (props.searchResults && props.searchResults.value ? props.searchResults.value.payLoad : []);
+  const binders = (props.binders && props.binders.value ? props.binders.value.payLoad : []);
   const collection = (props.collection && props.collection.value ? props.collection.value.payLoad : []);
 
   function toggleView() {
@@ -46,33 +50,13 @@ function SearchList(props) {
   const tooltipTitle = (viewMode === 'list' ? 'Grid view' : 'List view');
   const btnIcon = (viewMode === 'list' ? <TableOutlined/> : <UnorderedListOutlined/>);
 
-  {/* <Col key={c.multiverseid} span={3}>
-          <Card
-            className="mtg-card"
-            cover={<div className="card-wrapper">
-              <div className="counter">
-                <CopyOutlined />
-                <span className="count">
-                  {formatQuantity(cardQuantity(c.multiverseid,
-                    collection))}
-                </span>
-              </div>
-              <img className="full-width" alt={c.name} src={c.imageUrl} />
-            </div>}
-            actions={
-            [<CardUpdate 
-              card={{info: c, quantity: cardQuantity(c.multiverseid, collection)}} 
-              {...props} 
-            />,
-              <Link to={cardLink(c)}><EyeOutlined /></Link>,
-              <EllipsisOutlined />,
-            ]}
-          >
-            <Card.Meta
-              className="no-display"
-            />
-          </Card>
-        </Col> */}
+  function renderBinders(binders) {
+    return (
+      binders.map(b => (
+        <MtgBinder binder={b} {...props} />
+      ))
+    );
+  }
 
   function renderCards(cards) {
     return (
@@ -148,40 +132,60 @@ function SearchList(props) {
   
 
   return (
-    <>
-      <CardSearch onSearch={handleSearch} sets={props.sets} results={props.searchResults} />
-      <Row justify="center" align="middle" style={{ marginBottom: '10px' }}>
-        {results.length > 0 && (
-          <Col style={{ textAlign: 'center', marginRight: '20px' }}>
-            <b>{results.length} cards found!</b>
-          </Col>
-        )}    
-        <Col>
-          <Tooltip title={tooltipTitle}>
-            <Button icon={btnIcon} onClick={toggleView}/>
-          </Tooltip>
-        </Col>
-      </Row>
-      {
-        viewMode === 'list' && 
-        <Table
-            rowKey={cardRowKey}
-            loading={(props.searchResults ? props.searchResults.pending : false)}
-            size='small'
-            columns={columns}
-            dataSource={results}
-        />
-      }
-      {
-        viewMode === 'grid' &&
-        <Spin spinning={(props.searchResults ? props.searchResults.pending : false)}>
-          <Row gutter={16}>
-            {renderCards(results)}
-          </Row>
-        </Spin>
-      }
-    </>
+    <Tabs defaultActiveKey="binder" centered>
+        <TabPane tab={<span><DatabaseOutlined />Binders</span>} key="binder" >
+            <Row justify="center" align="middle">
+                {binders.length > 0 && (
+                <Col style={{ textAlign: 'center', marginRight: '20px' }}>
+                    <b>Sono stati trovati {binders.length} risultati!</b>
+                </Col>
+                )}    
+                <Col>
+                <Tooltip title={tooltipTitle}>
+                    <Button icon={btnIcon} onClick={toggleView}/>
+                </Tooltip>
+                </Col>
+            </Row>
+            <Spin spinning={(props.binders ? props.binders.pending : false)}>
+                <Row gutter={16}>
+                    {renderBinders(binders)}
+                </Row>
+            </Spin>
+        </TabPane>
+        <TabPane tab="Cards" key="cards">
+            <Row justify="center" align="middle">
+                {collection.length > 0 && (
+                <Col style={{ textAlign: 'center', marginRight: '20px' }}>
+                    <b>Sono stati trovati {collection.length} risultati!</b>
+                </Col>
+                )}    
+                <Col>
+                <Tooltip title={tooltipTitle}>
+                    <Button icon={btnIcon} onClick={toggleView}/>
+                </Tooltip>
+                </Col>
+            </Row>
+            {
+                viewMode === 'list' && 
+                <Table
+                    rowKey={cardRowKey}
+                    loading={(props.searchResults ? props.searchResults.pending : false)}
+                    size='small'
+                    columns={columns}
+                    dataSource={results}
+                />
+            }
+            {
+                viewMode === 'grid' &&
+                <Spin spinning={(props.searchResults ? props.searchResults.pending : false)}>
+                <Row gutter={16}>
+                    {renderCards(results)}
+                </Row>
+                </Spin>
+            }
+        </TabPane>
+    </Tabs>
   );
 }
 
-export default ajaxCards(SearchList);
+export default ajaxCards(Collection);

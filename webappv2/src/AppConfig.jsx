@@ -58,8 +58,14 @@ export const api = {
       sets: () => ({
         href: `${wsBaseHref}/sets`,
       }),
+      binders: () => ({
+        href: `${wsBaseHref}/collection/binders`
+      }),
       addCard: () => ({
         href: `${wsBaseHref}/collection/update`,
+      }),
+      addBinder: () => ({
+        href: `${wsBaseHref}/collection/binders/add`,
       }),
       ownChildrens: (id) => ({
         href: `${cardHref}/bo/${id}/ownerChildren`,

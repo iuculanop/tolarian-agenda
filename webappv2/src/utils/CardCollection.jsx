@@ -17,21 +17,36 @@ export function cardLink(record) {
 
 export function cardQuantity(idCard, collection) {
   // console.warn('cerco la carta con id:', idCard,' nella collezione ', collection);
-  const ownedCard = _.find(collection, { id_card: idCard });
-  if (ownedCard) {
+  const ownedCard = _.filter(collection, { id_card: idCard });
+  let totalQty = 0;
+  let totalFQty = 0;
+  if (ownedCard.length > 0) {
+    ownedCard.forEach(function(item) {
+      totalQty += item.quantity;
+      totalFQty += item.foil_quantity;
+    });
+  }
+  // console.warn('quantita totale: ', totalQty, ' . Foil: ', totalFQty);
+  /* if (ownedCard) {
     return {
       qty: ownedCard.quantity,
       foilQty: ownedCard.foil_quantity,
     };
-  }
+  } */
   return {
-    qty: 0,
-    foilQty: 0,
+    qty: totalQty,
+    foilQty: totalFQty,
   };
 }
 
+export function getCollectedItems(idCard, collection) {
+  const ownedCards = _.filter(collection, { id_card: idCard});
+  // console.warn('in collezione sono presenti le seguenti carte:', ownedCards);
+  return ownedCards;
+}
+
 export function cardLanguages(record) {
-  console.warn('record', record);
+  // console.warn('record', record);
   const cl = [];
   cl.push({ lang: 'English', value: record.multiverseid });
   if (record.foreignNames && record.foreignNames.length > 0) {
@@ -39,7 +54,7 @@ export function cardLanguages(record) {
       cl.push({ lang:element.language, value: element.multiverseid });
     });
   }
-  console.warn('lingue disponibili:', cl);
+  // console.warn('lingue disponibili:', cl);
   return cl;
 }
 
