@@ -11,6 +11,10 @@ export function cardRowKey(record) {
   return `${record.id}${record.number}`;
 }
 
+export function ownedCardRowKey(record) {
+  return `${record.id_card}${record.id_lang}`;
+}
+
 export function cardLink(record) {
   return `./card/${record.multiverseid}`;
 }

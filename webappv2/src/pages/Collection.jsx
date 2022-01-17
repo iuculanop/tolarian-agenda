@@ -11,6 +11,7 @@ import { cardQuantity,
   cardNameFormatter,
   cardLink,
   cardRowKey,
+  ownedCardRowKey,
   getCollectedItems,
 } from '../utils/CardCollection';
 import CardUpdate from '../components/CardUpdate';
@@ -68,64 +69,30 @@ function Collection(props) {
 
   const columns = [
     {
-      title: 'Carta',
-      dataIndex: 'name',
+      title: 'Name',
+      dataIndex: 'card_name',
       key: 'name',
-      render: (text, row) => <Link style={{ color: '#547192' }} to={cardLink(row)}>{cardNameFormatter(row)}</Link>,
+      render: (text, row) => <Link style={{ color: '#547192' }} to={cardLink(row)}>{text}</Link>,
     },
     {
-      title: 'Tipo',
-      dataIndex: 'type',
-      key: 'cardType',
-    },
-    {
-      title: 'Edizione',
-      dataIndex: 'setName',
+      title: 'Set',
+      dataIndex: 'mtg_set',
       key: 'setName',
     },
     {
-      title: 'Rarità',
+      title: 'Rarity',
       dataIndex: 'rarity',
       key: 'rarity',
     },
     {
-      title: 'Numero di Collezione',
-      dataIndex: 'number',
+      title: 'Collection Number',
+      dataIndex: 'collection_number',
       key: 'collNumber',
     },
     {
-      title: 'Quantità posseduta(foil)',
-      dataIndex: 'multiverseid',
-      render: id => formatQuantity(cardQuantity(id, collection)),
-    },
-    {
-      title: 'Azioni',
-      key: 'action',
-      render: (text, record) => (
-        <span>
-          <CardUpdate 
-            card={{info: record, quantity: cardQuantity(record.multiverseid, collection), items: getCollectedItems(record.multiverseid, collection)}} 
-            {...props} 
-          />
-          <Button
-            card={{
-              info: record,
-              quantity: cardQuantity(record.multiverseid, collection),
-            }}
-            onUpdate={props.updateCard}
-            viewMode={props.viewMode}
-          />
-          <Divider type="vertical" />
-          <Button
-            card={{
-              info: record,
-              quantity: wishQuantity(record.multiverseid, 10, props.wishlist || []),
-            }}
-            onUpdate={props.updateWishlist}
-            viewMode={props.viewMode}
-          />
-        </span>
-      ),
+      title: 'Owned(foil)',
+      dataIndex: 'quantity',
+      render: (qty, row) => `${qty}(${row.foil_quantity})`,
     },
   ];
 
@@ -147,8 +114,17 @@ function Collection(props) {
                 </Col>
             </Row>
             <Spin spinning={(props.binders ? props.binders.pending : false)}>
-                <Row gutter={16}>
+                <Row gutter={16} style={{ padding: '16px' }}>
                     {renderBinders(binders)}
+                    <Col style={{ display: 'flex' }} key="newBinder" span={3}>
+                        <Card
+                            hoverable
+                            style={{ width: '100%' }}
+                            cover={<img style={{ width: '95%', padding: '2px' }} alt="new binder" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiTj7xLlQHvQIUUlgVQB6IUREjV28uBD9Jcw&usqp=CAU" />}
+                        >
+                            <Card.Meta title="Add new binder" description="" />
+                        </Card>
+                    </Col>
                 </Row>
             </Spin>
         </TabPane>
@@ -168,11 +144,11 @@ function Collection(props) {
             {
                 viewMode === 'list' && 
                 <Table
-                    rowKey={cardRowKey}
-                    loading={(props.searchResults ? props.searchResults.pending : false)}
+                    rowKey={ownedCardRowKey}
+                    loading={(props.collection ? props.collection.pending : false)}
                     size='small'
                     columns={columns}
-                    dataSource={results}
+                    dataSource={collection}
                 />
             }
             {

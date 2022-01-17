@@ -13,7 +13,7 @@ import { basepath } from '../AppConfig';
 function MtgBinder(props) {
     const imgSrc = basepath+'binder.png';
     return (
-        <Col key={props.binder.binderId} span={3}>
+        <Col style={{ display: 'flex' }} key={props.binder.binderId} span={3}>
             <Card
                 hoverable
                 style={{ width: '100%' }}
