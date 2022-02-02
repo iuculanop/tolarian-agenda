@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Typography, Drawer, Form, InputNumber, Button, Row, message, Select, List } from 'antd';
 import { PlusSquareTwoTone } from '@ant-design/icons';
-import { cardLanguages } from '../utils/CardCollection';
+import { cardLanguages, getBinderName } from '../utils/CardCollection';
 import { generateLanguageOptions, generateBinderOptions } from './SelectUtils';
 
 const { Text, Title, Paragraph } = Typography;
@@ -44,6 +44,7 @@ function CardUpdate(props) {
             quantity: values.quantity,
             foil: (values.foilQuantity > 0 ? true : false),
             foil_quantity: values.foilQuantity,
+            id_binder: values.binder,
         };
         console.warn('card to add in collection', nc);
         try {
@@ -51,6 +52,7 @@ function CardUpdate(props) {
                 props.addCard(resolve, reject, nc)
             );
             console.warn('ho effettuato la chiamata ajax!');
+            setFormVisible(false);
         } catch (error) {
             console.warn('errore collection update! ', error);
             message.error('Cannot add card to collection! Error here.');
@@ -61,18 +63,19 @@ function CardUpdate(props) {
     return (
         <>
             <Link to="#" onClick={(event => onView(event))} ><PlusSquareTwoTone title="Add to collection" style={{ fontSize: '20px' }}/></Link>
-            <Drawer visible={visible} onClose={onClose} width="25%" title={props.card.info.name}>
+            <Drawer visible={visible} onClose={onClose} keyboard width="25%" title={props.card.info.name}>
                 <Title level={5}>Stored in Collection:</Title>
                 <List
                     className="collected-items"
                     itemLayout="horizontal"
+                    loading={(props.collection ? props.collection.pending : false)}
                     dataSource={props.card.items}
                     renderItem={item => (
                     <List.Item>
                         <List.Item.Meta className="coll-cards"
                             avatar={<img src={props.card.info.imageUrl} style={{ width: '100%'}} />}
-                            title={<a href="https://ant.design">{item.language}</a>}
-                            description={`Normal: ${item.quantity} Foil: ${item.foil_quantity}`}
+                            title={<a href="https://ant.design">binder <b>"{getBinderName(item.id_binder, binders)}"</b></a>}
+                            description={`Language: ${item.language} Normal: ${item.quantity} Foil: ${item.foil_quantity}`}
                         />
                     </List.Item>
                     )}

@@ -6,10 +6,12 @@ import CardUpdate from './CardUpdate';
 import { cardQuantity,
     formatQuantity,
     cardLink,
+    getCollectedItems,
   } from '../utils/CardCollection';
 
 
 function MtgCard(props) {
+    console.warn('props di MtgCard:',props);
     return (
         <Col key={props.mtgcard.multiverseid} span={3}>
           <Card
@@ -19,14 +21,14 @@ function MtgCard(props) {
                 <CopyOutlined />
                 <span className="count">
                   {formatQuantity(cardQuantity(props.mtgcard.multiverseid,
-                    props.collection))}
+                    props.coll))}
                 </span>
               </div>
               <img className="full-width" alt={props.mtgcard.name} src={props.mtgcard.imageUrl} />
             </div>}
             actions={
             [<CardUpdate 
-              card={{info: props.mtgcard, quantity: cardQuantity(props.mtgcard.multiverseid, props.collection)}} 
+              card={{info: props.mtgcard, quantity: cardQuantity(props.mtgcard.multiverseid, props.coll), items: getCollectedItems(props.mtgcard.multiverseid, props.coll)}} 
               {...props} 
             />,
               <Link to={cardLink(props.mtgcard)}><EyeOutlined /></Link>,

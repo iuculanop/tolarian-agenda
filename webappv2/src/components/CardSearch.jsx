@@ -79,7 +79,7 @@ function CardSearch({ onSearch, changeCtx, sets, results}) {
                 onFinish={handleSubmit}
             >
                 <Form.Item name="cardName" label="Card Name">
-                    <Input placeholder="Insert card name here" />
+                    <Input placeholder="Insert card name here" allowClear />
                 </Form.Item>
                 <Form.Item name="setCode" label="Expansion Set Name">
                     <Select 

@@ -12,13 +12,14 @@ import { cardQuantity,
   cardLink,
   cardRowKey,
   getCollectedItems,
+  cleanCardList,
 } from '../../utils/CardCollection';
 import CardUpdate from '../../components/CardUpdate';
 import MtgCard from '../../components/MtgCard';
 
 function SearchList(props) {
   const [viewMode, setViewMode] = useState('list');
-  const results = (props.searchResults && props.searchResults.value ? props.searchResults.value.payLoad : []);
+  const results = (props.searchResults && props.searchResults.value ? cleanCardList(props.searchResults.value.payLoad) : []);
   const collection = (props.collection && props.collection.value ? props.collection.value.payLoad : []);
 
   function toggleView() {
@@ -77,7 +78,7 @@ function SearchList(props) {
   function renderCards(cards) {
     return (
       cards.map(c => (
-        <MtgCard mtgcard={c} {...props} />
+        <MtgCard mtgcard={c} coll={collection} {...props} />
       ))
     );
   }

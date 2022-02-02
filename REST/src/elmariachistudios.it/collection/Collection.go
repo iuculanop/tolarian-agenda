@@ -2,29 +2,46 @@ package collection
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
 	"strings"
 	"time"
 
 	"elmariachistudios.it/transaction"
-	"github.com/MagicTheGathering/mtg-sdk-go"
+	mtg "github.com/MagicTheGathering/mtg-sdk-go"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/patrickmn/go-cache"
 )
 
 const (
 	plainInsert          = "INSERT INTO mtg_collection VALUES(?,?,?,?,?,?)"
 	updateInsert         = "INSERT INTO mtg_collection(id_owner,id_card,c_name,c_names,c_rarity,c_collnum,id_lang,c_language,mtg_set,quantity,foil,foil_quantity,id_binder) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, foil_quantity=?"
-	selectByUser         = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,id_lang,c_language,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ?"
+	selectByUser         = "SELECT id_card,c_name,c_names,c_rarity,c_collnum,id_lang,c_language,mtg_set,quantity,foil,foil_quantity,id_binder from mtg_collection WHERE id_owner = ?"
 	selectByUserCard     = "SELECT id_card,mtg_set,quantity,foil,foil_quantity from mtg_collection WHERE id_owner = ? AND id_card = ?"
 	deleteByUserCard     = "DELETE FROM mtg_collection WHERE id_owner=? AND id_card=? AND id_lang=?"
 	retrieveBinderByUser = "SELECT id_binder, id_owner, binder_name, creation_date FROM mtg_binder WHERE id_owner= ?"
 	addBinder            = "INSERT INTO mtg_binder (id_owner, binder_name, creation_date) VALUES(?,?,?)"
-	transAdded           = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'add',?)"
-	transRemoved         = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,'remove',?)"
+	transAdded           = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_collnum,c_lang,id_lang,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,?,?,?,'add',?)"
+	transRemoved         = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_collnum,c_lang,id_lang,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,?,?,?,'remove',?)"
 	plainWishInsert      = "INSERT INTO mtg_card_wishlist (u_id,c_id,c_name,c_set,c_type,quantity) VALUES(?,?,?,?,?,?)"
 	updateWishInsert     = "INSERT INTO mtg_card_wishlist VALUES(?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE quantity=?, c_set=?"
 	DBAuth               = "tolagenda:S8s8m3n3f8!@tcp(localhost:3306)/MTGOrganizer?parseTime=true"
 )
+
+// declaring cache
+var data storedData
+
+type storedData struct {
+	priceCache *cache.Cache
+}
+
+type MTGCard struct {
+	CardInfo  *mtg.Card `json:"cardInfo"`
+	CardPrice CardPrice `json:"cardPricings"`
+}
 
 type OwnedCard struct {
 	IdCard       string   `json:"id_card"`
@@ -38,6 +55,7 @@ type OwnedCard struct {
 	IdSet        string   `json:"mtg_set"`
 	Foil         bool     `json:"foil"`
 	FoilQuantity int      `json:"foil_quantity"`
+	Binder       int      `json:"id_binder"`
 }
 
 type Binder struct {
@@ -54,6 +72,9 @@ type CardTransaction struct {
 	CardName  string    `json:"name"`
 	CardNames []string  `json:"names"`
 	CardSet   string    `json:"cardSet"`
+	CollNum   string    `json:"collection_number"`
+	Language  string    `json:"language"`
+	IdLang    string    `json:"id_lang"`
 	CardType  int       `json:"cardType"`
 	Type      string    `json:"transType"`
 	DTtrans   time.Time `json:"transDate"`
@@ -70,6 +91,59 @@ type CardWishlist struct {
 	Quantity  int      `json:"quantity"`
 }
 
+type CardPrice struct {
+	CId          string    `json:"cardId"`
+	NormalPrices []Pricing `json:"pricesNormal"`
+	FoilPrices   []Pricing `json:"pricesFoil"`
+}
+
+type Pricing struct {
+	Date  time.Time `json:"date"`
+	Value float64   `json:"value"`
+}
+
+func init() {
+	// setting up the cache collector
+	data.priceCache = cache.New(cache.NoExpiration, 0*time.Minute)
+	readFromJson("../JSON/ReducedAllPrices.json", data.priceCache)
+
+	log.Println("runtime cache generata!")
+	log.Printf("Dimensione della cache: %v elementi trovati. \n", data.priceCache.ItemCount())
+}
+
+func readFromJson(pathToJson string, c *cache.Cache) (bool, error) {
+	// Open our jsonFile
+	jsonFile, err := os.Open(pathToJson)
+
+	// if we os.Open returns an error then handle it
+	if err != nil {
+		log.Fatalf("failed to open the pricings json file: %v", err)
+		return false, err
+		// fmt.Println(err)
+	}
+
+	log.Println("Successfully opened pricings json file")
+	// read our opened jsonFile as a byte array.
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+
+	var pricings []CardPrice
+	json.Unmarshal(byteValue, &pricings)
+
+	// fmt.Printf("%+v", pricings)
+	for _, price := range pricings {
+		if price.CId == "4732deef-6d46-54c3-86be-fd081d780893" {
+			fmt.Println("Inserita in cache la quotazione della carta con id 4732deef-6d46-54c3-86be-fd081d780893")
+		}
+		c.Set(price.CId, price, cache.NoExpiration)
+		// fmt.Printf("%+v \n", price)
+	}
+
+	log.Println("Successfully loaded pricings in cache")
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+	return true, nil
+}
+
 func mergeNames(card *mtg.Card) string {
 	var cnames string
 	if card.Names != nil {
@@ -78,12 +152,80 @@ func mergeNames(card *mtg.Card) string {
 	return cnames
 }
 
+func (cp *CardPrice) UnmarshalJSON(data []byte) error {
+	mp := map[string]interface{}{}
+	var np = []Pricing{}
+	var fp = []Pricing{}
+
+	if err := json.Unmarshal(data, &mp); err != nil {
+		return err
+	}
+
+	cp.CId = mp["cardId"].(string)
+	delete(mp, "cardId")
+
+	if val, ok := mp["normalPrices"]; ok && val != nil {
+		for k, v := range mp["normalPrices"].(map[string]interface{}) {
+			//u := map[string]interface{}{strings.TrimPrefix(string(k), "_"): v}
+			var p Pricing
+			mydate, _ := time.Parse("2006-01-02", k)
+			p.Date = mydate
+			p.Value = v.(float64)
+			np = append(np, p)
+		}
+	}
+
+	if val, ok := mp["foilPrices"]; ok && val != nil {
+		for k, v := range mp["foilPrices"].(map[string]interface{}) {
+			//u := map[string]interface{}{strings.TrimPrefix(string(k), "_"): v}
+			var p Pricing
+			mydate, _ := time.Parse("2006-01-02", k)
+			p.Date = mydate
+			p.Value = v.(float64)
+			fp = append(fp, p)
+		}
+	}
+
+	cp.NormalPrices = np
+	cp.FoilPrices = fp
+
+	return nil
+}
+
 /* func mergeNames(card *mtg.Card) (string,bool){
 	if card.Names != nil {
 		return strings.Join(card.Names,"_"), false
 	}
 	return cnames string,true
 } */
+
+func GetPrice(card *mtg.Card) MTGCard {
+	var mc MTGCard
+	mc.CardInfo = card
+
+	id := string(card.Id)
+	fmt.Printf("Cerco la carta con id %v in una cache di %v elementi. \n", id, data.priceCache.ItemCount())
+
+	value, found := data.priceCache.Get(id)
+
+	if !found {
+		fmt.Println("qualcosa non va nella cache")
+	}
+
+	if found {
+		fmt.Printf("cache ok %v", value)
+	}
+	cp, ok := value.(CardPrice)
+
+	if ok {
+		mc.CardPrice = cp
+	}
+
+	fmt.Printf("%+v \n", mc)
+
+	return mc
+	// fmt.Printf("%+v \n", value)
+}
 
 func RetrieveCardTransactions(userId int) []CardTransaction {
 	var cts = []CardTransaction{}
@@ -229,7 +371,7 @@ func RetrieveList(userId int) []OwnedCard {
 	for results.Next() {
 		var oc OwnedCard
 		var cardNames sql.NullString
-		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.IdLang, &oc.Language, &oc.IdSet, &oc.Quantity, &oc.Foil, &oc.FoilQuantity)
+		err = results.Scan(&oc.IdCard, &oc.CardName, &cardNames, &oc.Rarity, &oc.CollNum, &oc.IdLang, &oc.Language, &oc.IdSet, &oc.Quantity, &oc.Foil, &oc.FoilQuantity, &oc.Binder)
 
 		if err != nil {
 			// return []OwnedCard{}
@@ -385,12 +527,24 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 				cardColl.Quantity,
 				cardColl.Foil,
 				cardColl.FoilQuantity,
-				0,
+				cardColl.Binder,
 				cardColl.Quantity,
 				cardColl.FoilQuantity,
 			))
 		}
-		stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, cardColl.Foil, actualTime))
+		stmts = append(stmts, transaction.NewPipelineStmt(
+			transAdded,
+			userId,
+			cardColl.IdCard,
+			cInfo.Name,
+			mergeNames(cInfo),
+			cInfo.Set,
+			cInfo.Number,
+			cardColl.Language,
+			cardColl.IdLang,
+			false,
+			actualTime,
+		))
 	}
 
 	// se invece ho righe esistenti devo verificare se si tratta di aggiunte o rimozioni
@@ -416,25 +570,73 @@ func UpdateCard(userId int, cardColl OwnedCard) []OwnedCard {
 				cardColl.Quantity,
 				cardColl.Foil,
 				cardColl.FoilQuantity,
-				0,
+				cardColl.Binder,
 				cardColl.Quantity,
 				cardColl.FoilQuantity,
 			))
 		}
 		//confronto le due quantità di carte normali
 		if cardColl.Quantity > oc.Quantity {
-			stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, false, actualTime))
+			// transAdded           = "INSERT INTO mtg_card_transaction (u_id,c_id,c_name,c_names,c_set,c_collnum,c_lang,id_lang,c_type,trans_type,trans_date) VALUES(?,?,?,?,?,?,?,?,?,'add',?)"
+			stmts = append(stmts, transaction.NewPipelineStmt(
+				transAdded,
+				userId,
+				cardColl.IdCard,
+				cInfo.Name,
+				mergeNames(cInfo),
+				cInfo.Set,
+				cInfo.Number,
+				cardColl.Language,
+				cardColl.IdLang,
+				false,
+				actualTime,
+			))
 		}
 		if cardColl.Quantity < oc.Quantity {
-			stmts = append(stmts, transaction.NewPipelineStmt(transRemoved, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, false, actualTime))
+			stmts = append(stmts, transaction.NewPipelineStmt(
+				transRemoved,
+				userId,
+				cardColl.IdCard,
+				cInfo.Name,
+				mergeNames(cInfo),
+				cInfo.Set,
+				cInfo.Number,
+				cardColl.Language,
+				cardColl.IdLang,
+				false,
+				actualTime,
+			))
 		}
 
 		if cardColl.FoilQuantity > oc.FoilQuantity {
-			stmts = append(stmts, transaction.NewPipelineStmt(transAdded, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, true, actualTime))
-
+			stmts = append(stmts, transaction.NewPipelineStmt(
+				transAdded,
+				userId,
+				cardColl.IdCard,
+				cInfo.Name,
+				mergeNames(cInfo),
+				cInfo.Set,
+				cInfo.Number,
+				cardColl.Language,
+				cardColl.IdLang,
+				true,
+				actualTime,
+			))
 		}
 		if cardColl.FoilQuantity < oc.FoilQuantity {
-			stmts = append(stmts, transaction.NewPipelineStmt(transRemoved, userId, cardColl.IdCard, cInfo.Name, mergeNames(cInfo), cInfo.Set, true, actualTime))
+			stmts = append(stmts, transaction.NewPipelineStmt(
+				transRemoved,
+				userId,
+				cardColl.IdCard,
+				cInfo.Name,
+				mergeNames(cInfo),
+				cInfo.Set,
+				cInfo.Number,
+				cardColl.Language,
+				cardColl.IdLang,
+				true,
+				actualTime,
+			))
 
 		}
 	}

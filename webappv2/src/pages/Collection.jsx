@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, message, Row, Col, Tooltip, Divider, Table, Card, Spin, Tabs } from 'antd';
+import { Button, message, Row, Col, Tooltip, Divider, Table, Card, Spin, Tabs, Drawer } from 'antd';
 import { Link } from 'react-router-dom';
 import { UnorderedListOutlined, TableOutlined, DatabaseOutlined, EllipsisOutlined, EyeOutlined } from '@ant-design/icons';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -17,11 +17,13 @@ import { cardQuantity,
 import CardUpdate from '../components/CardUpdate';
 import MtgBinder from '../components/MtgBinder';
 import MtgCard from '../components/MtgCard';
+import AddBinder from '../components/AddBinder';
 
 const { TabPane } = Tabs;
 
 function Collection(props) {
   const [viewMode, setViewMode] = useState('list');
+  const [visible, setVisible] = useState(false);
   const results = (props.searchResults && props.searchResults.value ? props.searchResults.value.payLoad : []);
   const binders = (props.binders && props.binders.value ? props.binders.value.payLoad : []);
   const collection = (props.collection && props.collection.value ? props.collection.value.payLoad : []);
@@ -32,6 +34,17 @@ function Collection(props) {
     } else {
       setViewMode('list')
     }
+  }
+
+  function toggleDrawer(event) {
+    event.preventDefault();
+    if (!visible) {
+      setVisible(true);
+    }
+  }
+  
+  function onClose() {
+    setVisible(false);
   }
 
   async function handleSearch(fltrValues) {
@@ -118,6 +131,7 @@ function Collection(props) {
                     {renderBinders(binders)}
                     <Col style={{ display: 'flex' }} key="newBinder" span={3}>
                         <Card
+                            onClick={e => toggleDrawer(e)}
                             hoverable
                             style={{ width: '100%' }}
                             cover={<img style={{ width: '95%', padding: '2px' }} alt="new binder" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiTj7xLlQHvQIUUlgVQB6IUREjV28uBD9Jcw&usqp=CAU" />}
@@ -127,6 +141,7 @@ function Collection(props) {
                     </Col>
                 </Row>
             </Spin>
+            <AddBinder visible={visible} onClose={onClose} {...props} />
         </TabPane>
         <TabPane tab="Cards" key="cards">
             <Row justify="center" align="middle">

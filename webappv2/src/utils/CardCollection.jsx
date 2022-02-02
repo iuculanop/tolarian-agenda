@@ -7,6 +7,13 @@ export function checkSet(setObj) {
   return false;
 }
 
+export function cleanCardList(list) {
+  return _.uniqBy(list, function(e) {
+    //console.warn('e:', e, ' identified by id: ', cardRowKey(e));
+    return cardRowKey(e);
+  })
+}
+
 export function cardRowKey(record) {
   return `${record.id}${record.number}`;
 }
@@ -41,6 +48,14 @@ export function cardQuantity(idCard, collection) {
     qty: totalQty,
     foilQty: totalFQty,
   };
+}
+
+export function getBinderName(bId, binders) {
+  // console.warn('parametri passati a getBinderName', bId, binders);
+  const binder = _.find(binders, { binderId: bId });
+  // console.warn('recuperate info sul binder:', binder);
+  return binder.binderName;
+  // return "binder name";
 }
 
 export function getCollectedItems(idCard, collection) {

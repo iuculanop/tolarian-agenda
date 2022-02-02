@@ -207,7 +207,10 @@ var CardDetailHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Req
 		log.Panic(err)
 	}
 
-	rsp := ResponseRequest{card, "Fetch eseguita.", ""}
+	fmt.Printf("recupero prezzi della carta con id %v", card.Id)
+	c := collection.GetPrice(card)
+
+	rsp := ResponseRequest{c, "Fetch eseguita.", ""}
 	json.NewEncoder(w).Encode(rsp)
 })
 
