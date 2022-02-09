@@ -29,6 +29,8 @@ Dopo aver installato GO è necessario installare i package di GO necessari al se
 * eseguire il comando `go get -u github.com/auth0/go-jwt-middleware`
 * eseguire il comando `go get -u github.com/golang-jwt/jwt-go `
 * eseguire il comando `go get -u gopkg.in/square/go-jose.v2/jwt `
+* eseguire il comando `go get -u github.com/patrickmn/go-cache `
+* eseguire il comando `go get -u github.com/fsnotify/fsnotify `
 Si ricorda che per il momento viene utilizzato come ambiente di sviluppo, per cui non è necessario fare la compilazione del codice sorgente
 
 B. NPM

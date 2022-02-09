@@ -12,6 +12,7 @@ import (
 
 	"elmariachistudios.it/transaction"
 	mtg "github.com/MagicTheGathering/mtg-sdk-go"
+	"github.com/fsnotify/fsnotify"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/patrickmn/go-cache"
 )
@@ -109,6 +110,39 @@ func init() {
 
 	log.Println("runtime cache generata!")
 	log.Printf("Dimensione della cache: %v elementi trovati. \n", data.priceCache.ItemCount())
+
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer watcher.Close()
+
+	done := make(chan bool)
+	go func() {
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				log.Println("event:", event)
+				if event.Op&fsnotify.Write == fsnotify.Write {
+					log.Println("modified file:", event.Name)
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Println("error:", err)
+			}
+		}
+	}()
+
+	err = watcher.Add("../JSON/ReducedAllPrices.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	<-done
 }
 
 func readFromJson(pathToJson string, c *cache.Cache) (bool, error) {
